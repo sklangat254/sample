@@ -214,6 +214,23 @@ function clock(ts) {
   return ts ? new Date(ts).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "";
 }
 
+// App name used in invite codes (original name; not a real company's brand).
+const APP_NAME = "Amoriva";
+// Each section's invite code carries a fixed number. It's derived from the user's UID, so it's
+// the same every time they open the app (it never changes), but differs per user and per section.
+const CODE_NUMS = { chat: [150, 160, 170], hub: [200, 210, 220], redeem: [150, 160, 170] };
+function hashStr(s) { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h; }
+function sectionCode(uid, section) {
+  const set = CODE_NUMS[section] || CODE_NUMS.chat;
+  const num = set[hashStr(uid + section) % set.length];
+  return APP_NAME + uid.slice(0, 6).toUpperCase() + num;
+}
+function codeValid(section, pasted) {
+  const set = CODE_NUMS[section] || CODE_NUMS.chat;
+  const v = String(pasted).toLowerCase();
+  return v.includes(APP_NAME.toLowerCase()) && set.some((n) => v.includes(String(n)));
+}
+
 // Points a user earns for each reply they send (real or demo), between 0.40 and 1.00.
 function randomPoints() { return Math.round((0.40 + Math.random() * 0.60) * 100) / 100; }
 function awardPoints(uid, amt) {
@@ -393,7 +410,7 @@ function renderNav(active) {
 function initRedeem() {
   const uid = CURRENT.user && CURRENT.user.uid;
   if (!uid) return;
-  const code = "Amoriva" + uid.slice(0, 6).toUpperCase();
+  const code = sectionCode(uid, "redeem");
   const sheet = document.createElement("div");
   sheet.className = "sheet-bg";
   sheet.id = "redeemSheet";
@@ -417,10 +434,15 @@ function initRedeem() {
         <div class="inv-step"><span class="sn">5</span> They sign up and enter your code</div>
         <div class="inv-step"><span class="sn">6</span> Redeeming unlocks instantly 🎉</div>
       </div>
-      <div class="stack">
+      <div class="stack" style="margin-bottom:14px">
         <button class="btn btn-green" id="rdCopy">📋 Copy code</button>
         <button class="btn btn-outline" id="rdShare">📤 Share invite</button>
       </div>
+      <label class="inv-label">Were you invited? Paste the code here</label>
+      <div class="field" style="margin-top:0">
+        <textarea class="input code-paste" id="rdPaste" placeholder="Paste your friend's Amoriva code here…"></textarea>
+      </div>
+      <button class="btn btn-primary" id="rdUnlock">✅ Unlock redeeming</button>
     </div>
 
     <div id="rdForm" class="hidden">
@@ -429,8 +451,15 @@ function initRedeem() {
       <button class="btn btn-green" id="rdBtn" style="margin-top:12px">🎁 Redeem points</button>
     </div>
 
-    <p class="small muted" style="margin:14px 0 4px">Redeemed points unlock video calls (20+ needed). Points are for in-app features only — not cash.</p>
-    <button class="btn btn-outline" data-close style="margin-top:6px">Close</button>
+    <div id="rdSuccess" class="hidden" style="text-align:center;padding:4px 0 2px">
+      <div style="font-size:2.8rem">✅</div>
+      <h3 style="margin:6px 0 6px;color:#15803d">Redemption successful!</h3>
+      <p class="small muted" style="margin-bottom:14px">Your coins are being processed and will reflect in less than 10 seconds.</p>
+      <button class="btn btn-green" id="rdDone">Done</button>
+    </div>
+
+    <p class="small muted" id="rdNote" style="margin:14px 0 4px">Redeemed points unlock video calls (20+ needed). Points are for in-app features only — not cash.</p>
+    <button class="btn btn-outline" id="rdClose" data-close style="margin-top:6px">Close</button>
   </div>`;
   document.body.appendChild(sheet);
 
@@ -444,11 +473,16 @@ function initRedeem() {
   ref("users/" + uid + "/redeemedPoints").on("value", (s) => { redeemed = Number(s.val()) || 0; paint(); });
   ref("users/" + uid + "/redeemUnlocked").on("value", (s) => { unlocked = s.val() === true; applyGate(); });
 
-  $("#redeemFab").onclick = () => sheet.classList.add("show");
+  $("#redeemFab").onclick = () => { showSuccess(false); sheet.classList.add("show"); };
   sheet.onclick = (e) => { if (e.target === sheet) sheet.classList.remove("show"); };
   $$("[data-close]", sheet).forEach((b) => b.onclick = () => sheet.classList.remove("show"));
 
   function unlockRedeem() { unlocked = true; applyGate(); try { ref("users/" + uid + "/redeemUnlocked").set(true); } catch (e) {} }
+  $("#rdUnlock").onclick = () => {
+    const v = ($("#rdPaste").value || "").trim();
+    if (!codeValid("redeem", v)) { toast("That code isn't valid.", true); return; }
+    unlockRedeem(); toast("Redeeming unlocked!");
+  };
   $("#rdCopy").onclick = () => { navigator.clipboard?.writeText(code); toast("Code copied — share it with a friend!"); unlockRedeem(); };
   $("#rdShare").onclick = () => {
     const data = { title: "Amoriva", text: `Join me on Amoriva! Use my invite code: ${code}`, url: location.origin + "/index.html" };
@@ -456,6 +490,14 @@ function initRedeem() {
     else { navigator.clipboard?.writeText(data.text + " " + data.url); toast("Invite copied"); unlockRedeem(); }
   };
 
+  const showSuccess = (on) => {
+    $("#rdForm").classList.toggle("hidden", on || !unlocked);
+    $("#rdLocked").classList.toggle("hidden", on || unlocked);
+    $("#rdNote").classList.toggle("hidden", on);
+    $("#rdClose").classList.toggle("hidden", on);
+    $("#rdSuccess").classList.toggle("hidden", !on);
+  };
+  $("#rdDone").onclick = () => { sheet.classList.remove("show"); showSuccess(false); };
   $("#rdBtn").onclick = async () => {
     const amt = Math.round((parseFloat($("#rdAmount").value) || 0) * 100) / 100;
     if (!amt || amt <= 0) { toast("Enter how many points to redeem.", true); return; }
@@ -466,7 +508,7 @@ function initRedeem() {
         redeemedPoints: firebase.database.ServerValue.increment(amt)
       });
       $("#rdAmount").value = "";
-      toast("Redeemed " + fmtPoints(amt) + " points! 🎁");
+      showSuccess(true);
     } catch (e) { toast("Couldn't redeem right now.", true); }
   };
 }

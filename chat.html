@@ -40,7 +40,7 @@
   <div class="small muted center hidden" id="lockHint" style="margin:0 12px 6px">🎁 Invite a friend to unlock chatting — tap the box to get your code.</div>
   <div class="composer" id="composer">
     <textarea class="input" id="text" rows="1" maxlength="1000" placeholder="Type a message…"></textarea>
-    <button class="btn btn-primary" id="sendBtn">Send <span style="font-weight:700;opacity:.9">(+0.40–1.00 pts)</span></button>
+    <button class="btn btn-primary" id="sendBtn">Send</button>
   </div>
   <div class="notice hidden" id="blockedNote" style="margin:10px 12px"></div>
   <div class="hidden" id="lockBar">
@@ -185,7 +185,7 @@
     freeUsed = !!(me && me.freeMsgUsed === true);
     hubUnlocked = !!(me && me.hubUnlocked === true);
     if (hubMode) applyHubInviteText();
-    $("#myCode").textContent = "Amoriva" + myUid.slice(0, 6).toUpperCase();
+    $("#myCode").textContent = sectionCode(myUid, hubMode ? "hub" : "chat");
     refreshComposer();
     startPoints();
 
@@ -382,7 +382,7 @@
   };
   $("#unlockBtn").onclick = async () => {
     const v = ($("#inviteInput").value || "").trim();
-    if (!/amoriva/i.test(v)) { toast("That code isn't valid.", true); return; }
+    if (!codeValid(hubMode ? "hub" : "chat", v)) { toast("That code isn't valid.", true); return; }
     if (hubMode) {
       try { await ref("users/" + myUid + "/hubUnlocked").set(true); } catch (e) {}
       hubUnlocked = true;
@@ -431,6 +431,7 @@
     freeUsed = !!(me && me.freeMsgUsed === true);
     hubUnlocked = !!(me && me.hubUnlocked === true);
     if (hubMode) applyHubInviteText();
+    $("#myCode").textContent = sectionCode(myUid, hubMode ? "hub" : "chat");
     startPoints();
     const name = params.get("pn") || "Member";
     const country = params.get("pc") || "";
