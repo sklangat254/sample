@@ -431,7 +431,7 @@
   $("#copyCode").onclick = () => {
     navigator.clipboard?.writeText($("#myCode").textContent);
     toast("Code copied — share it with a friend!");
-    setUnlockFlag(); closeAll();   // copy-code is what tracks the invite
+    setUnlockFlag(); //closeAll();   // copy-code is what tracks the invite
   };
   $("#shareCode").onclick = () => {
     const data = { title: "Amoriva", text: `Join me on Amoriva! Use my invite code: ${$("#myCode").textContent}`, url: location.origin + "/index.html" };
