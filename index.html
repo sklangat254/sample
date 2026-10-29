@@ -1,0 +1,847 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amoriva | Get Started</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --green: #16865b;
+    --dark-green: #106744;
+    --light-green: #e9f8ed;
+    --text: #183b2b;
+    --muted: #74877b;
+    --border: #e1eee4;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background:
+        radial-gradient(circle at 15% 20%, #dff6e6, transparent 35%),
+        radial-gradient(circle at 85% 85%, #d7f2df, transparent 35%),
+        #f7fbf7;
+    color: var(--text);
+    min-height: 100vh;
+}
+
+button, textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.navbar {
+    max-width: 1150px;
+    margin: auto;
+    padding: 28px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--dark-green);
+    font-size: 22px;
+    font-weight: 800;
+    font-family: 'Manrope', sans-serif;
+}
+
+.logo-icon {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 13px;
+    color: white;
+    background: linear-gradient(135deg, #29b978, #087247);
+}
+
+.nav-label {
+    color: #718878;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.hero {
+    min-height: 78vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 55px 22px 90px;
+}
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    background: #e5f7e9;
+    border: 1px solid #d0ecd7;
+    color: #22784c;
+    padding: 10px 17px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 27px;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background: #26a568;
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px #c9eed6;
+}
+
+.hero-icon {
+    width: 76px;
+    height: 76px;
+    border-radius: 25px;
+    background: linear-gradient(135deg, #b9f0c8, #55c58b);
+    display: grid;
+    place-items: center;
+    font-size: 36px;
+    color: #12673e;
+    margin-bottom: 26px;
+    box-shadow: 0 12px 30px #25834b18;
+}
+
+.hero h1 {
+    font-family: 'Manrope', sans-serif;
+    font-size: clamp(42px, 6vw, 70px);
+    font-weight: 800;
+    line-height: 1.13;
+    letter-spacing: -2.5px;
+}
+
+.hero h1 span {
+    color: #239c64;
+}
+
+.hero > p {
+    color: #728379;
+    max-width: 420px;
+    line-height: 1.8;
+    font-size: 16px;
+    margin: 20px 0 30px;
+}
+
+.primary-btn {
+    background: linear-gradient(135deg, #239f66, #087447);
+    color: white;
+    border: 0;
+    border-radius: 15px;
+    padding: 17px 32px;
+    font-size: 15px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 25px;
+    min-width: 210px;
+    box-shadow: 0 12px 24px #16865b2b;
+    transition: transform .2s, box-shadow .2s;
+}
+
+.primary-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 30px #16865b38;
+}
+
+.primary-btn span {
+    font-size: 21px;
+}
+
+.hero-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #74887a;
+    font-size: 12px;
+    margin-top: 30px;
+}
+
+.hero-footer span {
+    color: #16865b;
+    font-weight: 800;
+    margin-left: 12px;
+}
+
+.hero-footer span:first-child {
+    margin-left: 0;
+}
+
+/* POPUP */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(12, 42, 27, .58);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+}
+
+.modal-overlay.show {
+    display: flex;
+    animation: fadeIn .22s ease;
+}
+
+.popup {
+    position: relative;
+    width: 100%;
+    max-width: 510px;
+    max-height: 92vh;
+    overflow-y: auto;
+    background: linear-gradient(160deg, #fff, #f4fbf5);
+    border: 1px solid #e1f0e4;
+    border-radius: 26px;
+    padding: 30px;
+    box-shadow: 0 28px 90px #001b0d45;
+    animation: slideUp .28s ease;
+    scrollbar-width: thin;
+    scrollbar-color: #b6dfc1 transparent;
+}
+
+.close-icon {
+    position: absolute;
+    top: 19px;
+    right: 19px;
+    border: 1px solid #e1eee4;
+    background: #f1f8f2;
+    color: #587564;
+    width: 35px;
+    height: 35px;
+    border-radius: 12px;
+    font-size: 25px;
+    display: grid;
+    place-items: center;
+}
+
+.popup-heading {
+    text-align: center;
+    padding: 4px 10px 23px;
+}
+
+.popup-icon {
+    width: 53px;
+    height: 53px;
+    border-radius: 18px;
+    margin: 0 auto 15px;
+    display: grid;
+    place-items: center;
+    font-size: 27px;
+    color: #116d43;
+    background: linear-gradient(135deg, #c9f5d4, #86dda5);
+}
+
+.eyebrow {
+    color: #279362;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+}
+
+.popup h2 {
+    font-family: 'Manrope', sans-serif;
+    font-size: 24px;
+    line-height: 1.3;
+    letter-spacing: -.7px;
+}
+
+.subtitle {
+    color: #77877c;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-top: 9px;
+}
+
+.progress-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #7d9182;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+}
+
+.progress-label span:last-child {
+    background: #e1f5e6;
+    color: #21804e;
+    padding: 6px 9px;
+    border-radius: 7px;
+    letter-spacing: .5px;
+}
+
+.steps {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.step {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    padding: 12px;
+    background: rgba(231, 247, 234, .62);
+    border: 1px solid #e5f1e7;
+    border-radius: 13px;
+    transition: background .2s, transform .2s;
+}
+
+.step:hover {
+    background: #e0f5e5;
+    transform: translateX(2px);
+}
+
+.step-number {
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 11px;
+    background: #d0f0d9;
+    color: #167548;
+    display: grid;
+    place-items: center;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.step h3 {
+    font-size: 12px;
+    font-weight: 700;
+    margin: 2px 0 4px;
+}
+
+.step p {
+    font-size: 11px;
+    line-height: 1.5;
+    color: #718378;
+}
+
+/* NUMBER COPY CARD */
+
+.copy-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: linear-gradient(120deg, #e2f8e8, #d4f1dd);
+    border: 1px solid #c9e9d1;
+    border-radius: 15px;
+    padding: 16px;
+    margin-top: 21px;
+}
+
+.copy-info {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    min-width: 0;
+}
+
+.field-label {
+    display: block;
+    color: #63816c;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.copy-info strong {
+    color: #145b38;
+    font-size: 16px;
+    letter-spacing: .5px;
+    overflow-wrap: anywhere;
+}
+
+.copy-btn {
+    flex-shrink: 0;
+    background: white;
+    border: 1px solid #cce6d2;
+    border-radius: 10px;
+    padding: 11px 13px;
+    color: #187447;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.copy-btn:hover {
+    background: #f0fff3;
+}
+
+/* MESSAGE INPUT */
+
+.message-section {
+    margin-top: 23px;
+}
+
+.message-section label {
+    margin-bottom: 10px;
+}
+
+textarea {
+    display: block;
+    width: 100%;
+    resize: vertical;
+    min-height: 115px;
+    padding: 15px;
+    border: 1px solid #dbe9de;
+    border-radius: 13px;
+    background: white;
+    color: #254936;
+    font-size: 13px;
+    line-height: 1.7;
+    outline: none;
+    transition: border .2s, box-shadow .2s;
+}
+
+textarea::placeholder {
+    color: #a1b0a5;
+}
+
+textarea:focus {
+    border-color: #57b981;
+    box-shadow: 0 0 0 4px #44ad7020;
+}
+
+.input-hint {
+    margin-top: 9px;
+    font-size: 11px;
+    color: #7d8e81;
+}
+
+.input-hint strong {
+    color: #218651;
+}
+
+/* FEEDBACK */
+
+.feedback {
+    display: none;
+    margin-top: 15px;
+    padding: 12px 14px;
+    border-radius: 11px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.6;
+}
+
+.feedback.success {
+    display: block;
+    color: #176d40;
+    background: #ddf7e5;
+    border: 1px solid #b9e8c7;
+}
+
+.feedback.error {
+    display: block;
+    color: #a33b35;
+    background: #fff0ee;
+    border: 1px solid #f3d1cd;
+}
+
+.verify-btn {
+    width: 100%;
+    margin-top: 19px;
+    border: none;
+    border-radius: 13px;
+    padding: 15px;
+    background: linear-gradient(135deg, #27a968, #11774a);
+    color: white;
+    font-weight: 800;
+    font-size: 13px;
+    box-shadow: 0 8px 18px #18834f20;
+    transition: transform .2s;
+}
+
+.verify-btn span {
+    margin-right: 8px;
+}
+
+.verify-btn:hover {
+    transform: translateY(-1px);
+}
+
+.close-btn {
+    width: 100%;
+    padding: 13px;
+    margin-top: 9px;
+    border: 1px solid #dfeae1;
+    border-radius: 13px;
+    background: white;
+    color: #647b6a;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.close-btn:hover {
+    background: #edf7ef;
+}
+
+.popup-footer {
+    text-align: center;
+    margin-top: 19px;
+    color: #8a9a8e;
+    font-size: 10px;
+}
+
+.popup-footer span {
+    color: #26975d;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(18px) scale(.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar {
+        padding: 20px;
+    }
+
+    .nav-label {
+        font-size: 11px;
+    }
+
+    .hero h1 {
+        letter-spacing: -1.5px;
+    }
+
+    .hero > p {
+        font-size: 14px;
+    }
+
+    .popup {
+        padding: 24px 17px;
+        border-radius: 22px;
+        max-height: 94vh;
+    }
+
+    .popup h2 {
+        font-size: 21px;
+    }
+
+    .copy-card {
+        padding: 12px;
+    }
+
+    .copy-btn {
+        padding: 10px;
+        font-size: 10px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="navbar">
+    <a href="#" class="logo">
+        <span class="logo-icon">A</span>
+        Amoriva
+    </a>
+    <span class="nav-label">Simple. Secure. Easy.</span>
+</header>
+
+<main class="hero">
+    <div class="hero-badge">
+        <span class="status-dot"></span>
+        Welcome to Amoriva
+    </div>
+
+    <div class="hero-icon">✦</div>
+
+    <h1>Your journey<br>starts <span>here.</span></h1>
+
+    <p>
+        Follow a few simple steps to get started.
+        Everything you need is right here.
+    </p>
+
+    <button class="primary-btn" id="openPopup">
+        Get Started <span>→</span>
+    </button>
+
+    <div class="hero-footer">
+        <span>✓</span> Simple process
+        <span>✓</span> Quick verification
+    </div>
+</main>
+
+<!-- POPUP -->
+<div class="modal-overlay" id="modalOverlay">
+    <section class="popup" role="dialog"
+        aria-modal="true" aria-labelledby="popupTitle">
+
+        <button class="close-icon" id="closeIcon"
+            aria-label="Close popup">&times;</button>
+
+        <div class="popup-heading">
+            <div class="popup-icon">✦</div>
+            <div class="eyebrow">LET'S GET STARTED</div>
+            <h2 id="popupTitle">Complete Your Steps</h2>
+            <p class="subtitle">
+                Follow the instructions below and verify your message.
+            </p>
+        </div>
+
+        <div class="progress-label">
+            <span>YOUR CHECKLIST</span>
+            <span>7 STEPS</span>
+        </div>
+
+        <div class="steps">
+            <div class="step">
+                <span class="step-number">01</span>
+                <div>
+                    <h3>Read the instructions</h3>
+                    <p>Carefully go through all seven steps.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <span class="step-number">02</span>
+                <div>
+                    <h3>Copy the number</h3>
+                    <p>Use the button below to copy the number provided.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <span class="step-number">03</span>
+                <div>
+                    <h3>Open your messaging app</h3>
+                    <p>Go to the app where you received or prepared your message.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <span class="step-number">04</span>
+                <div>
+                    <h3>Prepare your message</h3>
+                    <p>Follow the required instructions for your message.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <span class="step-number">05</span>
+                <div>
+                    <h3>Paste the message below</h3>
+                    <p>Copy your message and paste it into the text area.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <span class="step-number">06</span>
+                <div>
+                    <h3>Verify your message</h3>
+                    <p>Check whether your message contains the word amoriva.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <span class="step-number">07</span>
+                <div>
+                    <h3>Review the result</h3>
+                    <p>Read the verification result before closing this popup.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="copy-card">
+            <div class="copy-info">
+                <span class="field-label">NUMBER TO COPY</span>
+                <strong id="copyNumber">254700000000</strong>
+            </div>
+            <button class="copy-btn" id="copyBtn">
+                ▢ Copy Number
+            </button>
+        </div>
+
+        <div class="message-section">
+            <label for="messageInput" class="field-label">
+                PASTE YOUR MESSAGE
+            </label>
+
+            <textarea id="messageInput"
+                placeholder="Paste your message here..."
+                rows="4"></textarea>
+
+            <div class="input-hint">
+                The message must contain the word
+                <strong>amoriva</strong>.
+            </div>
+        </div>
+
+        <div id="feedback" class="feedback"
+            role="status" aria-live="polite"></div>
+
+        <button class="verify-btn" id="verifyBtn">
+            <span>✓</span> Verify Message
+        </button>
+
+        <button class="close-btn" id="closeBtn">Close</button>
+
+        <div class="popup-footer">
+            <span>✦</span> Amoriva · Simple verification
+        </div>
+    </section>
+</div>
+
+<script>
+const openPopup = document.getElementById("openPopup");
+const modalOverlay = document.getElementById("modalOverlay");
+const closeBtn = document.getElementById("closeBtn");
+const closeIcon = document.getElementById("closeIcon");
+
+const copyBtn = document.getElementById("copyBtn");
+const copyNumber = document.getElementById("copyNumber");
+const messageInput = document.getElementById("messageInput");
+const verifyBtn = document.getElementById("verifyBtn");
+const feedback = document.getElementById("feedback");
+
+// Open popup
+function openModal() {
+    modalOverlay.classList.add("show");
+    document.body.style.overflow = "hidden";
+}
+
+// Close popup
+function closeModal() {
+    modalOverlay.classList.remove("show");
+    document.body.style.overflow = "";
+}
+
+openPopup.addEventListener("click", openModal);
+closeBtn.addEventListener("click", closeModal);
+closeIcon.addEventListener("click", closeModal);
+
+// Close when clicking outside the popup
+modalOverlay.addEventListener("click", function(event) {
+    if (event.target === modalOverlay) {
+        closeModal();
+    }
+});
+
+// Close with Escape key
+document.addEventListener("keydown", function(event) {
+    if (event.key === "Escape") {
+        closeModal();
+    }
+});
+
+// Copy number
+copyBtn.addEventListener("click", async function() {
+    const number = copyNumber.textContent.trim();
+
+    try {
+        await navigator.clipboard.writeText(number);
+        copyBtn.textContent = "✓ Copied!";
+    } catch (error) {
+        const temporaryInput = document.createElement("textarea");
+        temporaryInput.value = number;
+        temporaryInput.style.position = "fixed";
+        temporaryInput.style.opacity = "0";
+
+        document.body.appendChild(temporaryInput);
+        temporaryInput.select();
+
+        const copied = document.execCommand("copy");
+        temporaryInput.remove();
+
+        if (copied) {
+            copyBtn.textContent = "✓ Copied!";
+        } else {
+            showFeedback(
+                "Please copy the number manually: " + number,
+                "error"
+            );
+            return;
+        }
+    }
+
+    setTimeout(function() {
+        copyBtn.textContent = "▢ Copy Number";
+    }, 2000);
+});
+
+// Display feedback
+function showFeedback(message, type) {
+    feedback.textContent = message;
+    feedback.className = "feedback " + type;
+}
+
+// Verify message
+verifyBtn.addEventListener("click", function() {
+    const message = messageInput.value.trim();
+
+    if (message.length === 0) {
+        showFeedback(
+            "Please paste your message before verifying.",
+            "error"
+        );
+        messageInput.focus();
+        return;
+    }
+
+    if (message.toLowerCase().includes("amoriva")) {
+        showFeedback(
+            "✓ Verification successful! Your message contains amoriva.",
+            "success"
+        );
+    } else {
+        showFeedback(
+            "✗ The word amoriva was not found. Please check your message and try again.",
+            "error"
+        );
+    }
+});
+
+// Clear feedback when the message changes
+messageInput.addEventListener("input", function() {
+    feedback.textContent = "";
+    feedback.className = "feedback";
+});
+</script>
+
+</body>
+</html>
