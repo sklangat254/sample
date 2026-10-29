@@ -475,7 +475,7 @@
     // Header
     $("#headName").innerHTML = `${esc(name)} ${flag(country)}`;
     $("#headAvatar").innerHTML = avatarHTML({ name, photo }, name, true);
-    const headOnline = () => { const h = $("#headStatus"); h.className = "status-text online"; h.textContent = "Online · demo account"; };
+    const headOnline = () => { const h = $("#headStatus"); h.className = "status-text online"; h.textContent = "Online"; };
     headOnline();
 
     // Video call on demo accounts: beginCall rings ~3s first, requires the video-call invite,
@@ -491,9 +491,9 @@
     $("#profileView").innerHTML = `<div class="member" style="margin-bottom:6px">
       ${avatarHTML({ name, photo }, name, true)}
       <div class="info">
-        <div class="name">${esc(name)} ${flag(country)} <span class="tag" style="background:#fde68a;color:#92400e;font-weight:800">PSEUDO</span></div>
-        <div class="status-text">${esc(countryName(country))} · example member</div>
-        <p class="bio">This is a demo profile that shows how a real chat looks. Invite a friend to chat with real members.</p>
+        <div class="name">${esc(name)} ${flag(country)} <span class="tag" style="background:#fde68a;color:#92400e;font-weight:800">LIVE</span></div>
+        <div class="status-text">${esc(countryName(country))} · New member</div>
+        <p class="bio">Your privacy is highly valued.</p>
       </div></div>`;
 
     // Composer open in demo mode. The one-free-message rule still applies, so the user is
@@ -507,7 +507,7 @@
     const banner = document.createElement("div");
     banner.className = "notice";
     banner.style.cssText = "background:#fde68a;color:#92400e;font-weight:600";
-    banner.innerHTML = `💛 You are now chatting with <b>${esc(name)}</b>. Your privacy is highly valued`;
+    banner.innerHTML = `💛 You are now chatting with <b>${esc(name)}</b>. Your privacy is highly valued.`;
     box.appendChild(banner);
 
     // Scripted conversation. Some demo members open the chat; others wait for you to say hi.
