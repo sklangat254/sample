@@ -186,7 +186,7 @@
   // Points: every reply the user sends (real or demo) earns 0.40–1.00 points, accumulated.
   function startPoints() {
     ref("users/" + myUid + "/points").on("value", (s) => {
-      const el = $("#ptsChip"); if (el) el.textContent = "$ " + fmtPoints(s.val());
+      const el = $("#ptsChip"); if (el) el.textContent = "$" + fmtPoints(s.val());
     });
     ref("users/" + myUid + "/redeemedPoints").on("value", (s) => { redeemedPoints = Number(s.val()) || 0; });
   }
@@ -195,7 +195,7 @@
     awardPoints(myUid, amt);
     const el = $("#ptsChip");
     if (el) { el.classList.remove("bump"); void el.offsetWidth; el.classList.add("bump"); }
-    toast("+" + amt.toFixed(2) + " points ⭐");
+    toast("+$" + amt.toFixed(2));
   }
 
   if (pseudoMode) { initPseudoChat(); }
