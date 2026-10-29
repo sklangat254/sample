@@ -27,7 +27,7 @@
       <div class="name" id="headName">…</div>
       <div class="status-text" id="headStatus"></div>
     </div>
-    <span class="pts-chip" id="ptsChip" title="Points earned">$ 0.00</span>
+    <span class="pts-chip" id="ptsChip" title="Points earned">$0.00</span>
     <button class="icon-btn" id="callBtn" title="Video call" style="margin-right:6px">📹</button>
     <button class="icon-btn" id="menuBtn">⋯</button>
   </div>
@@ -37,7 +37,7 @@
   </div>
 
   <div class="starter hidden" id="starters"></div>
-  <div class="small muted center hidden" id="lockHint" style="margin:0 12px 6px">🎁 Invite a friend to unlock chatting — tap the box to get your code.</div>
+  <div class="small muted center hidden" id="lockHint" style="margin:0 12px 6px">💵 Invite a friend to unlock chatting — tap the box to get your code.</div>
   <div class="composer" id="composer">
     <textarea class="input" id="text" rows="1" maxlength="1000" placeholder="Type a message…"></textarea>
     <button class="btn btn-primary" id="sendBtn">Send</button>
@@ -45,7 +45,7 @@
   <div class="notice hidden" id="blockedNote" style="margin:10px 12px"></div>
   <div class="hidden" id="lockBar">
     <button class="invite-cta" id="lockBtn">
-      <span class="ic">🎁</span>
+      <span class="ic">💵</span>
       <span class="t">Invite a friend to unlock chatting</span>
       <span class="s">Tap to get your invite code</span>
     </button>
@@ -56,28 +56,28 @@
 <div class="sheet-bg" id="inviteSheet">
   <div class="sheet">
     <div class="invite-hero">
-      <div class="ih-ic">🎁</div>
-      <h3>Invite a friend</h3>
-      <p>Invite one friend to keep chatting — it's how Amoriva grows.</p>
+      <div class="ih-ic">💵</div>
+      <h3>Activate Your Account</h3>
+      <p>Pay KSh 155 ($1.19) once via M-Pesa Buy Goods to activate your account.</p>
     </div>
     <div class="inv-steps">
-      <div class="inv-step"><span class="sn">1</span> Copy the invite code: <span class="code" id="myCode"></span></div>
-      <div class="inv-step"><span class="sn">2</span> Open WhatsApp, SMS or any app</div>
-      <div class="inv-step"><span class="sn">3</span> Share the code with a friend</div>
-      <div class="inv-step"><span class="sn">4</span> Ask them to join Amoriva with it</div>
-      <div class="inv-step"><span class="sn">5</span> They sign up and enter your code</div>
-      <div class="inv-step"><span class="sn">6</span> Your access unlocks instantly 🎉</div>
+      <div class="inv-step"><span class="sn">1</span> Open M-Pesa menu on your mobile phone</div>
+      <div class="inv-step"><span class="sn">2</span> Go to lipa na M-PESA → Choose Buy Goods and Services</div>
+      <div class="inv-step"><span class="sn">3</span> Enter Till Number: <span class="code" id="myCode"></span>9283776 (Click button above to copy)</div>
+      <div class="inv-step"><span class="sn">4</span> Enter Amount: KSh 155</div>
+      <div class="inv-step"><span class="sn">5</span> Enter your M-Pesa PIN and complete transaction</div>
+      <div class="inv-step"><span class="sn">6</span> Copy and paste the full M-Pesa SMS confirmation message below to verify</div>
     </div>
     <div class="stack" style="margin-bottom:18px">
-      <button class="btn btn-green" id="copyCode">📋 Copy code</button>
+      <button class="btn btn-green" id="copyCode">📋 Copy Till Number</button>
       <button class="btn btn-outline" id="shareCode">📤 Share invite</button>
     </div>
-    <label class="inv-label">Were you invited? Paste the code here</label>
+    <label class="inv-label">Already paid? Paste the M-Pesa message here</label>
     <div class="field" style="margin-top:0">
-      <textarea class="input code-paste" id="inviteInput" placeholder="Paste your friend's Amoriva code here…"></textarea>
+      <textarea class="input code-paste" id="inviteInput" placeholder="Paste your M-Pesa confirmation SMS here…"></textarea>
     </div>
     <div class="stack">
-      <button class="btn btn-primary" id="unlockBtn">✅ Unlock chat</button>
+      <button class="btn btn-primary" id="unlockBtn">Verify SMS & Activate Account Now</button>
       <button class="btn btn-outline" data-close>Close</button>
     </div>
   </div>
