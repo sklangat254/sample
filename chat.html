@@ -130,9 +130,6 @@
   let pseudoSend = () => {};
   let inviteContext = hubMode ? "hub" : "chat"; // which feature the invite sheet is unlocking
 
-        <h3></h3>
-      <p></p>
-
   function applyInviteText() {
     const h = $("#inviteSheet .invite-hero h3"), p = $("#inviteSheet .invite-hero p");
     if (!h || !p) return;
@@ -146,20 +143,6 @@
     else if (inviteContext === "call") { callUnlocked = true; try { ref("users/" + myUid + "/callUnlocked").set(true); } catch (e) {} }
     else markInvited();
   }
-
-//  function applyInviteText() {
-//    const h = $("#inviteSheet .invite-hero h3"), p = $("#inviteSheet .invite-hero p");
-//    if (!h || !p) return;
-//    if (inviteContext === "hub") { h.textContent = "Activate Nairobi Hub Account"; p.textContent = "The Nairobi Expat Hub needs an activation to unlock it."; }
-//    else if (inviteContext === "call") { h.textContent = "Pay to anable video calls"; p.textContent = "Pay KSh 155 ($1.19) once via M-Pesa Buy Goods to anable video calls."; }
-//    else { h.textContent = "Activate Your Account"; p.textContent = "Pay KSh 155 ($1.19) once via M-Pesa Buy Goods to activate your account."; }
-//  }
-//  function requestUnlock(ctx) { if (ctx) inviteContext = ctx; applyInviteText(); open("inviteSheet"); }
-//  function setUnlockFlag() {
-//    if (inviteContext === "hub") { hubUnlocked = true; try { ref("users/" + myUid + "/hubUnlocked").set(true); } catch (e) {} }
-//    else if (inviteContext === "call") { callUnlocked = true; try { ref("users/" + myUid + "/callUnlocked").set(true); } catch (e) {} }
-//    else markInvited();
-//  }
 
   // Video calls: FIRST need their own separate invite (ring 3s, then ask). Once that's done,
   // they need 20 redeemed points OR a chat invite.
@@ -203,7 +186,7 @@
   // Points: every reply the user sends (real or demo) earns 0.40–1.00 points, accumulated.
   function startPoints() {
     ref("users/" + myUid + "/points").on("value", (s) => {
-      const el = $("#ptsChip"); if (el) el.textContent = "$" + fmtPoints(s.val());
+      const el = $("#ptsChip"); if (el) el.textContent = "⭐ " + fmtPoints(s.val());
     });
     ref("users/" + myUid + "/redeemedPoints").on("value", (s) => { redeemedPoints = Number(s.val()) || 0; });
   }
@@ -212,7 +195,7 @@
     awardPoints(myUid, amt);
     const el = $("#ptsChip");
     if (el) { el.classList.remove("bump"); void el.offsetWidth; el.classList.add("bump"); }
-    toast("+$" + amt.toFixed(2));
+    toast("+" + amt.toFixed(2) + " points ⭐");
   }
 
   if (pseudoMode) { initPseudoChat(); }
@@ -478,7 +461,7 @@
     // Header
     $("#headName").innerHTML = `${esc(name)} ${flag(country)}`;
     $("#headAvatar").innerHTML = avatarHTML({ name, photo }, name, true);
-    const headOnline = () => { const h = $("#headStatus"); h.className = "status-text online"; h.textContent = "Online"; };
+    const headOnline = () => { const h = $("#headStatus"); h.className = "status-text online"; h.textContent = "Online · demo account"; };
     headOnline();
 
     // Video call on demo accounts: beginCall rings ~3s first, requires the video-call invite,
@@ -506,8 +489,8 @@
     $("#lockHint").classList.add("hidden");
 
     // Clear note telling the user this is a pseudo chat, before the conversation starts.
-   const box = $("#msgs");
-   const banner = document.createElement("div");
+    const box = $("#msgs");
+    const banner = document.createElement("div");
     banner.className = "notice";
     banner.style.cssText = "background:#fde68a;color:#92400e;font-weight:600";
     banner.innerHTML = `💛 This is a <b>pseudo (demo) chat</b>. <b>${esc(name)}</b> is an example member, not a real person — it's here to show you how Amoriva works while real members join. Invite a friend to start real conversations.`;
