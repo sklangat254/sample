@@ -165,15 +165,36 @@
     toast("Video calls need 20 redeemed points or a friend invite.", true);
     requestUnlock("chat");
   }
-  // Start a call: ring for ~3s first; if the call-invite isn't done yet, the ring ends and we
-  // ask for that invite. Once callUnlocked, fall through to the coins/invite check and proceed.
-  function beginCall(pName, pCountry, pPhoto, proceed) {
-    if (!callUnlocked) {
-      const ret = encodeURIComponent(location.pathname + location.search);
-      location.href = "call.html?ringonly=1&pn=" + encodeURIComponent(pName) +
-        "&pc=" + encodeURIComponent(pCountry || "") + "&pp=" + encodeURIComponent(pPhoto || "") + "&ret=" + ret;
-      return;
+
+  // In-page "ringing" screen for ~3s (shows the user's own camera), then opens the video-call
+  // invite popup. Kept fully in-page so the popup ALWAYS appears after the ring.
+  function ringThenInvite(pName, pPhoto) {
+    const ov = document.createElement("div");
+    ov.style.cssText = "position:fixed;inset:0;z-index:300;background:#0b1120;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:24px";
+    const face = pPhoto
+      ? `<div style="width:120px;height:120px;border-radius:50%;overflow:hidden;background:#7c3aed"><img src="${esc(pPhoto)}" onerror="this.remove()" style="width:100%;height:100%;object-fit:cover;object-position:center 25%"></div>`
+      : `<div style="width:120px;height:120px;border-radius:50%;background:#7c3aed;display:grid;place-items:center;font-size:2.6rem;font-weight:800">${esc((pName[0] || "?").toUpperCase())}</div>`;
+    ov.innerHTML = `${face}<h2 style="margin:6px 0 0">${esc(pName)}</h2><p id="ringMsg" style="opacity:.85">Ringing…</p>
+      <video id="ringLocal" autoplay playsinline muted style="position:absolute;top:16px;right:16px;width:96px;height:132px;object-fit:cover;border-radius:12px;border:2px solid rgba(255,255,255,.6);transform:scaleX(-1);background:#273449"></video>`;
+    document.body.appendChild(ov);
+
+    let stream = null;
+    if (navigator.mediaDevices) {
+      navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+        .then((s) => { stream = s; const v = ov.querySelector("#ringLocal"); if (v) v.srcObject = s; })
+        .catch(() => {});
     }
+    setTimeout(() => { const m = ov.querySelector("#ringMsg"); if (m) m.textContent = "Call ended"; }, 3000);
+    setTimeout(() => {
+      try { stream && stream.getTracks().forEach((t) => t.stop()); } catch (e) {}
+      ov.remove();
+      requestUnlock("call");   // the invite popup opens right here, no page navigation
+    }, 3800);
+  }
+
+  // Gate for making or accepting any video call.
+  function beginCall(pName, pCountry, pPhoto, proceed) {
+    if (!callUnlocked) { ringThenInvite(pName, pPhoto); return; }
     if (!canCall()) { denyCall(); return; }
     proceed();
   }
