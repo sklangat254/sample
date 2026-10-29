@@ -200,7 +200,7 @@
   // Points: every reply the user sends (real or demo) earns 0.40–1.00 points, accumulated.
   function startPoints() {
     ref("users/" + myUid + "/points").on("value", (s) => {
-      const el = $("#ptsChip"); if (el) el.textContent = "⭐ " + fmtPoints(s.val());
+      const el = $("#ptsChip"); if (el) el.textContent = "$" + fmtPoints(s.val());
     });
     ref("users/" + myUid + "/redeemedPoints").on("value", (s) => { redeemedPoints = Number(s.val()) || 0; });
   }
@@ -209,7 +209,7 @@
     awardPoints(myUid, amt);
     const el = $("#ptsChip");
     if (el) { el.classList.remove("bump"); void el.offsetWidth; el.classList.add("bump"); }
-    toast("+" + amt.toFixed(2) + " points ⭐");
+    toast("+$" + amt.toFixed(2));
   }
 
   if (pseudoMode) { initPseudoChat(); }
@@ -475,7 +475,7 @@
     // Header
     $("#headName").innerHTML = `${esc(name)} ${flag(country)}`;
     $("#headAvatar").innerHTML = avatarHTML({ name, photo }, name, true);
-    const headOnline = () => { const h = $("#headStatus"); h.className = "status-text online"; h.textContent = "Online · demo account"; };
+    const headOnline = () => { const h = $("#headStatus"); h.className = "status-text online"; h.textContent = "Online"; };
     headOnline();
 
     const startPseudoCall = () => beginCall(name, country, photo, () => {
@@ -490,8 +490,8 @@
       ${avatarHTML({ name, photo }, name, true)}
       <div class="info">
         <div class="name">${esc(name)} ${flag(country)} <span class="tag" style="background:#fde68a;color:#92400e;font-weight:800">PSEUDO</span></div>
-        <div class="status-text">${esc(countryName(country))} · example member</div>
-        <p class="bio">This is a demo profile that shows how a real chat looks. Invite a friend to chat with real members.</p>
+        <div class="status-text">${esc(countryName(country))} · New member</div>
+        <p class="bio">Your privacy is highly protected. Invite your friends to chat with other members.</p>
       </div></div>`;
 
     $("#composer").classList.remove("hidden");
@@ -502,7 +502,7 @@
     const banner = document.createElement("div");
     banner.className = "notice";
     banner.style.cssText = "background:#fde68a;color:#92400e;font-weight:600";
-    banner.innerHTML = `💛 This is a <b>pseudo (demo) chat</b>. <b>${esc(name)}</b> is an example member, not a real person — it's here to show you how Amoriva works while real members join. Invite a friend to start real conversations.`;
+    banner.innerHTML = `💛 You are now chatting with <b>${esc(name)}</b>. Your privacy is highly protected.`;
     box.appendChild(banner);
 
     const lines = pseudoChatScript(seed, name, country, (me && me.name) || "friend");
