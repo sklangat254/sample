@@ -478,13 +478,7 @@
     const headOnline = () => { const h = $("#headStatus"); h.className = "status-text online"; h.textContent = "Online · demo account"; };
     headOnline();
 
-    // Demo chats are saved under the user's own node so they show in Chats and reload with history.
-    const pcRef = ref("pseudoChats/" + myUid + "/" + seed);
-
-    // Video call on demo accounts: beginCall rings ~3s first, requires the video-call invite,
-    // then the coins/invite check, then opens the call. A real call resets the request counter.
     const startPseudoCall = () => beginCall(name, country, photo, () => {
-      try { pcRef.child("callReq").set(0); } catch (e) {} // user video-called → allow requests again
       location.href = "call.html?pseudo=" + encodeURIComponent(seed) + (hubMode ? "&hub=1" : "") +
         "&pn=" + encodeURIComponent(name) + "&pc=" + encodeURIComponent(country) + "&pp=" + encodeURIComponent(photo);
     });
@@ -500,12 +494,10 @@
         <p class="bio">This is a demo profile that shows how a real chat looks. Invite a friend to chat with real members.</p>
       </div></div>`;
 
-    // Composer open in demo mode. The one-free-message rule still applies.
     $("#composer").classList.remove("hidden");
     const t = $("#text"); t.readOnly = false; t.placeholder = "Type a message…";
     $("#lockHint").classList.add("hidden");
 
-    // Note telling the user this is a pseudo chat, before the conversation starts.
     const box = $("#msgs");
     const banner = document.createElement("div");
     banner.className = "notice";
@@ -513,11 +505,11 @@
     banner.innerHTML = `💛 This is a <b>pseudo (demo) chat</b>. <b>${esc(name)}</b> is an example member, not a real person — it's here to show you how Amoriva works while real members join. Invite a friend to start real conversations.`;
     box.appendChild(banner);
 
-    // Scripted conversation. Some demo members open the chat; others wait for you to say hi.
     const lines = pseudoChatScript(seed, name, country, (me && me.name) || "friend");
     let li = 0, awaiting = false;
     const botFirst = seed % 2 === 0;
 
+    const pcRef = ref("pseudoChats/" + myUid + "/" + seed);
     function savePseudoMsg(from, text) {
       const preview = text.length > 80 ? text.slice(0, 80) + "…" : text;
       const key = pcRef.child("msgs").push().key;
@@ -541,7 +533,7 @@
       setTimeout(() => {
         addPseudoMsg(line, false); li++;
         savePseudoMsg("them", line);
-        awardReplyPoints();   // points are earned for replies RECEIVED
+        awardReplyPoints();
         headOnline();
         awaiting = false;
       }, delay);
@@ -558,7 +550,6 @@
       botSay();
     };
 
-    // Load saved history first; only greet fresh if there's nothing yet.
     const existing = (await pcRef.once("value")).val();
     if (existing && existing.msgs) {
       Object.values(existing.msgs).sort((a, b) => (a.at || 0) - (b.at || 0))
@@ -570,12 +561,13 @@
       setTimeout(() => $("#starters") && showStarters(), 700);
     }
 
-    // The demo member requests a video call — but only up to TWICE in total. It never asks again
-    // until the user video-calls the pseudo (which resets the counter in startPseudoCall above).
-    const callReqCount = (existing && existing.callReq) || 0;
-    if (callReqCount < 2) {
+    // Only the FIRST TWO distinct demo members (across the whole app) request a video call, once
+    // each. callReqTotal is a per-user global counter; callReqDone marks this pseudo as done.
+    const callReqTotal = (me && me.callReqTotal) || 0;
+    if (!(existing && existing.callReqDone) && callReqTotal < 2) {
       setTimeout(() => {
-        try { pcRef.child("callReq").set(callReqCount + 1); } catch (e) {}
+        try { pcRef.child("callReqDone").set(true); } catch (e) {}
+        try { ref("users/" + myUid + "/callReqTotal").set(firebase.database.ServerValue.increment(1)); } catch (e) {}
         const box = $("#msgs");
         const ic = document.createElement("div");
         ic.className = "notice";
