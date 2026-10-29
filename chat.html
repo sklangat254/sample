@@ -126,24 +126,51 @@
   const pseudoSeed = params.get("pseudo");
   const pseudoMode = pseudoSeed !== null;
   const hubMode = params.get("hub") === "1"; // Nairobi Expat Hub: needs a SEPARATE friend invite.
-  let myUid, me, other, cid, iBlocked = false, theyBlocked = false, invited = false, freeUsed = false, hubUnlocked = false, redeemedPoints = 0, awardSince = Infinity, lastDay = "", lastSend = 0, msgCount = 0;
+  let myUid, me, other, cid, iBlocked = false, theyBlocked = false, invited = false, freeUsed = false, hubUnlocked = false, callUnlocked = false, redeemedPoints = 0, awardSince = Infinity, lastDay = "", lastSend = 0, msgCount = 0;
   let pseudoSend = () => {};
-  function requestUnlock() { open("inviteSheet"); }
+  let inviteContext = hubMode ? "hub" : "chat"; // which feature the invite sheet is unlocking
 
-  // Video calls need at least 20 redeemed points, OR the user has invited a friend.
+  function applyInviteText() {
+    const h = $("#inviteSheet .invite-hero h3"), p = $("#inviteSheet .invite-hero p");
+    if (!h || !p) return;
+    if (inviteContext === "hub") { h.textContent = "Invite a different friend"; p.textContent = "The Nairobi Expat Hub needs a separate invite — bring a different friend to unlock it."; }
+    else if (inviteContext === "call") { h.textContent = "Invite a friend for video calls"; p.textContent = "Video calls need one more invite. Copy your code and share it with a friend to unlock calling."; }
+    else { h.textContent = "Invite a friend"; p.textContent = "Invite one friend to keep chatting — it's how Amoriva grows."; }
+  }
+  function requestUnlock(ctx) { if (ctx) inviteContext = ctx; applyInviteText(); open("inviteSheet"); }
+  function setUnlockFlag() {
+    if (inviteContext === "hub") { hubUnlocked = true; try { ref("users/" + myUid + "/hubUnlocked").set(true); } catch (e) {} }
+    else if (inviteContext === "call") { callUnlocked = true; try { ref("users/" + myUid + "/callUnlocked").set(true); } catch (e) {} }
+    else markInvited();
+  }
+
+  // Video calls: FIRST need their own separate invite (ring 3s, then ask). Once that's done,
+  // they need 20 redeemed points OR a chat invite.
   function canCall() { return redeemedPoints >= 20 || invited; }
   function denyCall() {
     toast("Video calls need 20 redeemed points or a friend invite.", true);
-    open("inviteSheet");
+    requestUnlock("chat");
+  }
+  // Start a call: ring for ~3s first; if the call-invite isn't done yet, the ring ends and we
+  // ask for that invite. Once callUnlocked, fall through to the coins/invite check and proceed.
+  function beginCall(pName, pCountry, pPhoto, proceed) {
+    if (!callUnlocked) {
+      const ret = encodeURIComponent(location.pathname + location.search);
+      location.href = "call.html?ringonly=1&pn=" + encodeURIComponent(pName) +
+        "&pc=" + encodeURIComponent(pCountry || "") + "&pp=" + encodeURIComponent(pPhoto || "") + "&ret=" + ret;
+      return;
+    }
+    if (!canCall()) { denyCall(); return; }
+    proceed();
   }
 
   // Normal chats: one free message, then invite a friend. Expat-hub chats: a separate friend
   // invite is required up front (invite a DIFFERENT friend than the one for normal chats).
   function canSend() {
-    if (hubMode) { if (hubUnlocked) return true; requestUnlock(); return false; }
+    if (hubMode) { if (hubUnlocked) return true; requestUnlock("hub"); return false; }
     if (invited) return true;
     if (!freeUsed) return true;
-    requestUnlock();
+    requestUnlock("chat");
     return false;
   }
   function consumeFree() {
@@ -154,10 +181,6 @@
   function markInvited() {
     invited = true;
     try { ref("users/" + myUid + "/hasInvited").set(true); } catch (e) {}
-  }
-  function markUnlock() {
-    if (hubMode) { hubUnlocked = true; try { ref("users/" + myUid + "/hubUnlocked").set(true); } catch (e) {} }
-    else markInvited();
   }
 
   // Points: every reply the user sends (real or demo) earns 0.40–1.00 points, accumulated.
@@ -184,9 +207,11 @@
     invited = !!(me && (me.chatUnlocked === true || me.hasInvited === true));
     freeUsed = !!(me && me.freeMsgUsed === true);
     hubUnlocked = !!(me && me.hubUnlocked === true);
-    if (hubMode) applyHubInviteText();
+    callUnlocked = !!(me && me.callUnlocked === true);
+    applyInviteText();
     $("#myCode").textContent = sectionCode(myUid, hubMode ? "hub" : "chat");
     refreshComposer();
+    if (params.get("callinvite") === "1") setTimeout(() => requestUnlock("call"), 400);
     startPoints();
 
     const snap = await ref("users/" + otherUid).once("value");
@@ -347,18 +372,19 @@
   const closeAll = () => $$(".sheet-bg").forEach((s) => s.classList.remove("show"));
   $("#menuBtn").onclick = () => open("menu");
 
-  $("#callBtn").onclick = async () => {
+  $("#callBtn").onclick = () => {
     if (!other || iBlocked || theyBlocked) { toast("You can't call this member.", true); return; }
-    if (!canCall()) { denyCall(); return; }
-    const callId = ref("calls").push().key;
-    try {
-      await ref("calls/" + callId).set({
-        caller: myUid, callerName: me.name, callee: otherUid, calleeName: other.name,
-        status: "ringing", at: TS
-      });
-      await ref("ring/" + otherUid).set({ callId, caller: myUid, callerName: me.name });
-      location.href = "call.html?id=" + encodeURIComponent(callId) + "&role=caller";
-    } catch (e) { toast("Couldn't start the call.", true); }
+    beginCall(other.name, other.country, "", async () => {
+      const callId = ref("calls").push().key;
+      try {
+        await ref("calls/" + callId).set({
+          caller: myUid, callerName: me.name, callee: otherUid, calleeName: other.name,
+          status: "ringing", at: TS
+        });
+        await ref("ring/" + otherUid).set({ callId, caller: myUid, callerName: me.name });
+        location.href = "call.html?id=" + encodeURIComponent(callId) + "&role=caller";
+      } catch (e) { toast("Couldn't start the call.", true); }
+    });
   };
   $$("[data-close]").forEach((b) => b.onclick = closeAll);
   // The guard ignores the stray click from the same tap that opened the sheet (which was
@@ -366,34 +392,24 @@
   $$(".sheet-bg").forEach((bg) => bg.onclick = (e) => { if (e.target === bg && Date.now() > sheetGuardUntil) closeAll(); });
 
   // Invite / unlock
-  function applyHubInviteText() {
-    const h = $("#inviteSheet .invite-hero h3"); if (h) h.textContent = "Invite a different friend";
-    const p = $("#inviteSheet .invite-hero p"); if (p) p.textContent = "The Nairobi Expat Hub needs a separate invite — bring a different friend to unlock it.";
-  }
   $("#lockBtn").onclick = () => open("inviteSheet");
   $("#copyCode").onclick = () => {
     navigator.clipboard?.writeText($("#myCode").textContent);
     toast("Code copied — share it with a friend!");
-    markUnlock(); closeAll();
+    setUnlockFlag(); closeAll();   // copy-code is what tracks the invite
   };
   $("#shareCode").onclick = () => {
     const data = { title: "Amoriva", text: `Join me on Amoriva! Use my invite code: ${$("#myCode").textContent}`, url: location.origin + "/index.html" };
-    if (navigator.share) navigator.share(data).then(() => { markUnlock(); closeAll(); }).catch(() => {});
-    else { navigator.clipboard?.writeText(data.text + " " + data.url); toast("Invite copied"); markUnlock(); closeAll(); }
+    if (navigator.share) navigator.share(data).then(() => { setUnlockFlag(); closeAll(); }).catch(() => {});
+    else { navigator.clipboard?.writeText(data.text + " " + data.url); toast("Invite copied"); setUnlockFlag(); closeAll(); }
   };
   $("#unlockBtn").onclick = async () => {
     const v = ($("#inviteInput").value || "").trim();
-    if (!codeValid(hubMode ? "hub" : "chat", v)) { toast("That code isn't valid.", true); return; }
-    if (hubMode) {
-      try { await ref("users/" + myUid + "/hubUnlocked").set(true); } catch (e) {}
-      hubUnlocked = true;
-      closeAll();
-      toast("Expat Hub unlocked — enjoy chatting!");
-      return;
-    }
-    try { await ref("users/" + myUid + "/chatUnlocked").set(true); } catch (e) {}
-    invited = true;
+    if (!codeValid(inviteContext === "hub" ? "hub" : "chat", v)) { toast("That code isn't valid.", true); return; }
+    setUnlockFlag();
     closeAll();
+    if (inviteContext === "call") { toast("Video calls unlocked — tap 📹 to try again."); return; }
+    if (inviteContext === "hub") { toast("Expat Hub unlocked — enjoy chatting!"); return; }
     refreshComposer();
     toast("Unlocked — chat as much as you like!");
   };
@@ -431,9 +447,11 @@
     invited = !!(me && (me.chatUnlocked === true || me.hasInvited === true));
     freeUsed = !!(me && me.freeMsgUsed === true);
     hubUnlocked = !!(me && me.hubUnlocked === true);
-    if (hubMode) applyHubInviteText();
+    callUnlocked = !!(me && me.callUnlocked === true);
+    applyInviteText();
     $("#myCode").textContent = sectionCode(myUid, hubMode ? "hub" : "chat");
     startPoints();
+    if (params.get("callinvite") === "1") setTimeout(() => requestUnlock("call"), 400);
     const name = params.get("pn") || "Member";
     const country = params.get("pc") || "";
     const seed = parseInt(pseudoSeed, 10) || 0;
@@ -446,13 +464,14 @@
     const headOnline = () => { const h = $("#headStatus"); h.className = "status-text online"; h.textContent = "Online · demo account"; };
     headOnline();
 
-    // Video call is enabled on demo accounts: it opens the call screen (the user sees their own
-    // camera), then shows that the member is busy / has restricted video. Invite is required first.
-    $("#callBtn").onclick = () => {
-      if (!canCall()) { denyCall(); return; }
+    // Video call on demo accounts: beginCall rings ~3s first, requires the video-call invite,
+    // then the coins/invite check, then opens the call (user sees their camera, member is busy).
+    const startPseudoCall = () => beginCall(name, country, photo, () => {
       location.href = "call.html?pseudo=" + encodeURIComponent(seed) + (hubMode ? "&hub=1" : "") +
         "&pn=" + encodeURIComponent(name) + "&pc=" + encodeURIComponent(country) + "&pp=" + encodeURIComponent(photo);
-    };
+    });
+    $("#callBtn").onclick = startPseudoCall;
+    window.startPseudoCall = startPseudoCall; // used by the incoming-call request prompt
     $("#blockBtn").style.display = "none";
     $("#reportOpen").style.display = "none";
     $("#profileView").innerHTML = `<div class="member" style="margin-bottom:6px">
@@ -536,6 +555,23 @@
     } else {
       setTimeout(() => $("#starters") && showStarters(), 700); // otherwise nudge you to start
     }
+
+    // The demo member requests a video call after a little while. Accepting runs the call flow
+    // (rings ~3s, then asks for the video-call invite if it isn't done yet).
+    setTimeout(() => {
+      const box = $("#msgs");
+      const ic = document.createElement("div");
+      ic.className = "notice";
+      ic.style.cssText = "background:#dcfce7;color:#15803d;font-weight:700;display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap";
+      ic.innerHTML = `<span>📹 ${esc(name)} is requesting a video call…</span>`;
+      const wrap = document.createElement("span"); wrap.style.cssText = "display:flex;gap:6px";
+      const accept = document.createElement("button"); accept.className = "btn btn-green btn-sm"; accept.textContent = "Accept";
+      const later = document.createElement("button"); later.className = "btn btn-outline btn-sm"; later.textContent = "Later";
+      wrap.appendChild(accept); wrap.appendChild(later); ic.appendChild(wrap);
+      box.appendChild(ic); box.scrollTop = box.scrollHeight;
+      accept.onclick = () => { ic.remove(); startPseudoCall(); };
+      later.onclick = () => ic.remove();
+    }, 12000);
   }
 </script>
 </body>

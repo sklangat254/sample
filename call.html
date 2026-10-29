@@ -62,12 +62,14 @@
   const isCaller = role === "caller";
   const pseudoSeed = params.get("pseudo");       // demo call with an example member
   const isDemo = pseudoSeed !== null;
+  const ringOnly = params.get("ringonly") === "1"; // ring ~3s, then return to ask for the call invite
   let myUid, callRef, pc, localStream, remoteSet = false, pending = [], ended = false, peerUid = null, ringTimeout = null;
 
   const setStatus = (t) => { $("#statusPill").textContent = t; $("#ovMsg").textContent = t; };
   const showErr = (t) => { $("#ovErr").textContent = t; };
 
-  if (isDemo) { initDemoCall(); }
+  if (ringOnly) { initRingOnly(); }
+  else if (isDemo) { initDemoCall(); }
   else requireAuth().then(async ({ user, profile }) => {
     myUid = user.uid;
     if (!callId) { location.replace("members.html"); return; }
@@ -250,6 +252,32 @@
   }
   function endLocalDemo() {
     try { localStream && localStream.getTracks().forEach((t) => t.stop()); } catch (e) {}
+  }
+
+  /* ---------- Ring-only gate: actually ring for ~3s, then go back to ask for the call invite ---------- */
+  async function initRingOnly() {
+    const name = params.get("pn") || "Member";
+    const country = params.get("pc") || "";
+    const photo = params.get("pp") || "";
+    const ret = decodeURIComponent(params.get("ret") || "members.html");
+    const back = ret + (ret.indexOf("?") >= 0 ? "&" : "?") + "callinvite=1";
+
+    $("#ovName").textContent = name + " " + flag(country);
+    if (photo) $("#ovAv").innerHTML = `<img src="${esc(photo)}" alt="" onerror="this.remove()" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+    else $("#ovAv").textContent = (name[0] || "?").toUpperCase();
+    setStatus("Ringing…");
+
+    try {
+      localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      $("#local").srcObject = localStream;
+    } catch (e) { showErr("Camera/microphone blocked. Allow access to use video calls."); }
+
+    const leaveNow = () => { endLocalDemo(); location.replace(back); };
+    setTimeout(() => { setStatus("Call ended"); $("#ovMsg").textContent = "Call couldn't connect."; }, 3000);
+    setTimeout(leaveNow, 4200);
+    $("#endBtn").onclick = leaveNow;
+    $("#micBtn").onclick = () => { micOn = !micOn; localStream && localStream.getAudioTracks().forEach((t) => t.enabled = micOn); $("#micBtn").classList.toggle("off", !micOn); $("#micBtn").textContent = micOn ? "🎙️" : "🔇"; };
+    $("#camBtn").onclick = () => { camOn = !camOn; localStream && localStream.getVideoTracks().forEach((t) => t.enabled = camOn); $("#camBtn").classList.toggle("off", !camOn); $("#camBtn").textContent = camOn ? "📷" : "🚫"; };
   }
 
   window.addEventListener("beforeunload", () => { try { callRef && callRef.child("status").set("ended"); } catch (e) {} });
