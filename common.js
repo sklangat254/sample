@@ -408,12 +408,18 @@ function initRedeem() {
     </div>
 
     <div id="rdLocked">
-      <p class="small muted" style="margin-bottom:12px">Invite <b>one friend</b> to unlock redeeming your points.</p>
-      <label class="inv-label">Your invite code</label>
-      <div class="code-display"><input class="input" id="rdCode" readonly value="${code}"></div>
+      <p class="small muted" style="margin-bottom:10px">Invite <b>one friend</b> to unlock redeeming your points.</p>
+      <div class="inv-steps">
+        <div class="inv-step"><span class="sn">1</span> Copy the invite code: <span class="code">${code}</span></div>
+        <div class="inv-step"><span class="sn">2</span> Open WhatsApp, SMS or any app</div>
+        <div class="inv-step"><span class="sn">3</span> Share the code with a friend</div>
+        <div class="inv-step"><span class="sn">4</span> Ask them to join Amoriva with it</div>
+        <div class="inv-step"><span class="sn">5</span> They sign up and enter your code</div>
+        <div class="inv-step"><span class="sn">6</span> Redeeming unlocks instantly 🎉</div>
+      </div>
       <div class="stack">
-        <button class="btn btn-primary" id="rdShare">📤 Invite a friend to unlock</button>
         <button class="btn btn-green" id="rdCopy">📋 Copy code</button>
+        <button class="btn btn-outline" id="rdShare">📤 Share invite</button>
       </div>
     </div>
 

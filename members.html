@@ -133,17 +133,16 @@
       <p>Share your code — once a friend joins, you're set to chat freely.</p>
     </div>
     <div class="inv-steps">
-      <div class="inv-step"><span class="sn">1</span> Copy your invite code</div>
-      <div class="inv-step"><span class="sn">2</span> Share it on WhatsApp, SMS or anywhere</div>
-      <div class="inv-step"><span class="sn">3</span> Your friend joins with your code</div>
-    </div>
-    <label class="inv-label">Your invite code</label>
-    <div class="code-display">
-      <input class="input" id="myCode" readonly>
+      <div class="inv-step"><span class="sn">1</span> Copy the invite code: <span class="code" id="myCode"></span></div>
+      <div class="inv-step"><span class="sn">2</span> Open WhatsApp, SMS or any app</div>
+      <div class="inv-step"><span class="sn">3</span> Share the code with a friend</div>
+      <div class="inv-step"><span class="sn">4</span> Ask them to join Amoriva with it</div>
+      <div class="inv-step"><span class="sn">5</span> They sign up and enter your code</div>
+      <div class="inv-step"><span class="sn">6</span> Your access unlocks instantly 🎉</div>
     </div>
     <div class="stack" style="margin-bottom:18px">
-      <button class="btn btn-green" id="shareCode">📤 Share invite</button>
-      <button class="btn btn-outline" id="copyCode">📋 Copy code</button>
+      <button class="btn btn-green" id="copyCode">📋 Copy code</button>
+      <button class="btn btn-outline" id="shareCode">📤 Share invite</button>
     </div>
     <label class="inv-label">Were you invited? Paste the code here</label>
     <div class="field" style="margin-top:0">
@@ -169,7 +168,7 @@
     me = profile; myUid = user.uid;
     renderNav("members");
     renderAd($("#ad1"));
-    $("#myCode").value = "Amoriva" + myUid.slice(0, 6).toUpperCase();
+    $("#myCode").textContent = "Amoriva" + myUid.slice(0, 6).toUpperCase();
 
     ref("blocks/" + myUid).on("value", (s) => { blocked = s.val() || {}; render(); });
     ref("users").orderByChild("lastSeen").limitToLast(300).on("value", (s) => { users = s.val() || {}; render(); });
@@ -203,9 +202,9 @@
     $("#invitePanel").classList.add("hidden");
     try { await ref("users/" + myUid + "/hasInvited").set(true); } catch (e) {}
   }
-  $("#copyCode").onclick = () => { navigator.clipboard?.writeText($("#myCode").value); toast("Code copied — share it with a friend!"); markInvited(); };
+  $("#copyCode").onclick = () => { navigator.clipboard?.writeText($("#myCode").textContent); toast("Code copied — share it with a friend!"); markInvited(); };
   $("#shareCode").onclick = () => {
-    const data = { title: "Amoriva", text: `Join me on Amoriva! Use my invite code: ${$("#myCode").value}`, url: location.origin + "/index.html" };
+    const data = { title: "Amoriva", text: `Join me on Amoriva! Use my invite code: ${$("#myCode").textContent}`, url: location.origin + "/index.html" };
     if (navigator.share) navigator.share(data).then(markInvited).catch(() => {});
     else { navigator.clipboard?.writeText(data.text + " " + data.url); toast("Invite copied"); markInvited(); }
   };

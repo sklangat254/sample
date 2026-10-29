@@ -151,8 +151,8 @@ textarea.input { resize: vertical; min-height: 90px; }
 .nav a .badge { position: absolute; top: 8px; left: calc(50% + 6px); margin: 0; }
 .nav .nav-fab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
   background: none; border: 0; cursor: pointer; color: var(--muted); font-size: .76rem; font-weight: 700; }
-.nav .nav-fab .ic { width: 48px; height: 48px; margin-top: -20px; border-radius: 50%; display: grid; place-items: center;
-  font-size: 1.4rem; color: #15803d; background: #dcfce7; border: 3px solid #15803d; box-shadow: 0 6px 16px rgba(21,128,61,.4); }
+.nav .nav-fab .ic { width: 58px; height: 58px; margin-top: -24px; border-radius: 50%; display: grid; place-items: center;
+  font-size: 1.6rem; color: #053d26; background: #4ade80; border: 3px solid #15803d; box-shadow: 0 6px 18px rgba(21,128,61,.5); }
 .nav .nav-fab { color: #15803d; }
 
 /* Chat screen */
@@ -188,10 +188,11 @@ textarea.input { resize: vertical; min-height: 90px; }
 .invite-hero .ih-ic { font-size: 2.6rem; line-height: 1; }
 .invite-hero h3 { margin: 8px 0 4px; color: #fff; font-size: 1.25rem; }
 .invite-hero p { margin: 0; font-size: .88rem; opacity: .94; }
-.inv-steps { display: flex; flex-direction: column; gap: 10px; margin: 2px 0 18px; }
-.inv-step { display: flex; align-items: center; gap: 11px; font-size: .92rem; font-weight: 600; color: var(--text); }
-.inv-step .sn { width: 28px; height: 28px; border-radius: 50%; background: var(--primary-soft); color: var(--primary);
-  display: grid; place-items: center; font-weight: 800; flex-shrink: 0; font-size: .95rem; }
+.inv-steps { display: flex; flex-direction: column; gap: 5px; margin: 2px 0 14px; }
+.inv-step { display: flex; align-items: center; gap: 9px; font-size: .86rem; font-weight: 600; color: var(--text); }
+.inv-step .sn { width: 23px; height: 23px; border-radius: 50%; background: #dcfce7; color: #15803d;
+  display: grid; place-items: center; font-weight: 800; flex-shrink: 0; font-size: .8rem; }
+.inv-step .code { font-weight: 800; color: #15803d; }
 .inv-label { display: block; font-weight: 800; font-size: .82rem; color: var(--text); margin: 2px 0 7px; }
 .code-display { display: flex; gap: 8px; align-items: stretch; margin-bottom: 18px; }
 .code-display .input { flex: 1; font-weight: 800; letter-spacing: 1.5px; text-align: center; font-size: 1.15rem;

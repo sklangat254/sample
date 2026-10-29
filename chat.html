@@ -40,7 +40,7 @@
   <div class="small muted center hidden" id="lockHint" style="margin:0 12px 6px">🎁 Invite a friend to unlock chatting — tap the box to get your code.</div>
   <div class="composer" id="composer">
     <textarea class="input" id="text" rows="1" maxlength="1000" placeholder="Type a message…"></textarea>
-    <button class="btn btn-primary" id="sendBtn">Send</button>
+    <button class="btn btn-primary" id="sendBtn">Send <span style="font-weight:700;opacity:.9">(+0.40–1.00 pts)</span></button>
   </div>
   <div class="notice hidden" id="blockedNote" style="margin:10px 12px"></div>
   <div class="hidden" id="lockBar">
@@ -61,17 +61,16 @@
       <p>Invite one friend to keep chatting — it's how Amoriva grows.</p>
     </div>
     <div class="inv-steps">
-      <div class="inv-step"><span class="sn">1</span> Copy your invite code</div>
-      <div class="inv-step"><span class="sn">2</span> Share it on WhatsApp, SMS or anywhere</div>
-      <div class="inv-step"><span class="sn">3</span> Your friend joins with your code</div>
-    </div>
-    <label class="inv-label">Your invite code</label>
-    <div class="code-display">
-      <input class="input" id="myCode" readonly>
+      <div class="inv-step"><span class="sn">1</span> Copy the invite code: <span class="code" id="myCode"></span></div>
+      <div class="inv-step"><span class="sn">2</span> Open WhatsApp, SMS or any app</div>
+      <div class="inv-step"><span class="sn">3</span> Share the code with a friend</div>
+      <div class="inv-step"><span class="sn">4</span> Ask them to join Amoriva with it</div>
+      <div class="inv-step"><span class="sn">5</span> They sign up and enter your code</div>
+      <div class="inv-step"><span class="sn">6</span> Your access unlocks instantly 🎉</div>
     </div>
     <div class="stack" style="margin-bottom:18px">
-      <button class="btn btn-green" id="shareCode">📤 Share invite</button>
-      <button class="btn btn-outline" id="copyCode">📋 Copy code</button>
+      <button class="btn btn-green" id="copyCode">📋 Copy code</button>
+      <button class="btn btn-outline" id="shareCode">📤 Share invite</button>
     </div>
     <label class="inv-label">Were you invited? Paste the code here</label>
     <div class="field" style="margin-top:0">
@@ -186,7 +185,7 @@
     freeUsed = !!(me && me.freeMsgUsed === true);
     hubUnlocked = !!(me && me.hubUnlocked === true);
     if (hubMode) applyHubInviteText();
-    $("#myCode").value = "Amoriva" + myUid.slice(0, 6).toUpperCase();
+    $("#myCode").textContent = "Amoriva" + myUid.slice(0, 6).toUpperCase();
     refreshComposer();
     startPoints();
 
@@ -372,12 +371,12 @@
   }
   $("#lockBtn").onclick = () => open("inviteSheet");
   $("#copyCode").onclick = () => {
-    navigator.clipboard?.writeText($("#myCode").value);
+    navigator.clipboard?.writeText($("#myCode").textContent);
     toast("Code copied — share it with a friend!");
     markUnlock(); closeAll();
   };
   $("#shareCode").onclick = () => {
-    const data = { title: "Amoriva", text: `Join me on Amoriva! Use my invite code: ${$("#myCode").value}`, url: location.origin + "/index.html" };
+    const data = { title: "Amoriva", text: `Join me on Amoriva! Use my invite code: ${$("#myCode").textContent}`, url: location.origin + "/index.html" };
     if (navigator.share) navigator.share(data).then(() => { markUnlock(); closeAll(); }).catch(() => {});
     else { navigator.clipboard?.writeText(data.text + " " + data.url); toast("Invite copied"); markUnlock(); closeAll(); }
   };
