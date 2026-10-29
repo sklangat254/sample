@@ -475,40 +475,42 @@
     // Header
     $("#headName").innerHTML = `${esc(name)} ${flag(country)}`;
     $("#headAvatar").innerHTML = avatarHTML({ name, photo }, name, true);
-    const headOnline = () => { const h = $("#headStatus"); h.className = "status-text online"; h.textContent = "Online"; };
+    const headOnline = () => { const h = $("#headStatus"); h.className = "status-text online"; h.textContent = "Online · demo account"; };
     headOnline();
 
+    // Demo chats are saved under the user's own node so they show in Chats and reload with history.
+    const pcRef = ref("pseudoChats/" + myUid + "/" + seed);
+
     // Video call on demo accounts: beginCall rings ~3s first, requires the video-call invite,
-    // then the coins/invite check, then opens the call (user sees their camera, member is busy).
-const startPseudoCall = () => beginCall(name, country, photo, () => {
-  try { pcRef.child("callReq").set(0); } catch (e) {} // user video-called → allow requests again
-    try { pcRef.child("callReq").set(0); } catch (e) {}location.href = "call.html?pseudo=" + encodeURIComponent(seed) + (hubMode ? "&hub=1" : "") +
-    "&pn=" + encodeURIComponent(name) + "&pc=" + encodeURIComponent(country) + "&pp=" + encodeURIComponent(photo);
-});
+    // then the coins/invite check, then opens the call. A real call resets the request counter.
+    const startPseudoCall = () => beginCall(name, country, photo, () => {
+      try { pcRef.child("callReq").set(0); } catch (e) {} // user video-called → allow requests again
+      location.href = "call.html?pseudo=" + encodeURIComponent(seed) + (hubMode ? "&hub=1" : "") +
+        "&pn=" + encodeURIComponent(name) + "&pc=" + encodeURIComponent(country) + "&pp=" + encodeURIComponent(photo);
+    });
     $("#callBtn").onclick = startPseudoCall;
-    window.startPseudoCall = startPseudoCall; // used by the incoming-call request prompt
+    window.startPseudoCall = startPseudoCall;
     $("#blockBtn").style.display = "none";
     $("#reportOpen").style.display = "none";
     $("#profileView").innerHTML = `<div class="member" style="margin-bottom:6px">
       ${avatarHTML({ name, photo }, name, true)}
       <div class="info">
-        <div class="name">${esc(name)} ${flag(country)} <span class="tag" style="background:#fde68a;color:#92400e;font-weight:800">LIVE</span></div>
-        <div class="status-text">${esc(countryName(country))} · New member</div>
-        <p class="bio">Your privacy is highly valued.</p>
+        <div class="name">${esc(name)} ${flag(country)} <span class="tag" style="background:#fde68a;color:#92400e;font-weight:800">PSEUDO</span></div>
+        <div class="status-text">${esc(countryName(country))} · example member</div>
+        <p class="bio">This is a demo profile that shows how a real chat looks. Invite a friend to chat with real members.</p>
       </div></div>`;
 
-    // Composer open in demo mode. The one-free-message rule still applies, so the user is
-    // invited to bring a friend after their first reply here too.
+    // Composer open in demo mode. The one-free-message rule still applies.
     $("#composer").classList.remove("hidden");
     const t = $("#text"); t.readOnly = false; t.placeholder = "Type a message…";
     $("#lockHint").classList.add("hidden");
 
-    // Clear note telling the user this is a pseudo chat, before the conversation starts.
+    // Note telling the user this is a pseudo chat, before the conversation starts.
     const box = $("#msgs");
     const banner = document.createElement("div");
     banner.className = "notice";
     banner.style.cssText = "background:#fde68a;color:#92400e;font-weight:600";
-    banner.innerHTML = `💛 You are now chatting with <b>${esc(name)}</b>. Your privacy is highly valued.`;
+    banner.innerHTML = `💛 This is a <b>pseudo (demo) chat</b>. <b>${esc(name)}</b> is an example member, not a real person — it's here to show you how Amoriva works while real members join. Invite a friend to start real conversations.`;
     box.appendChild(banner);
 
     // Scripted conversation. Some demo members open the chat; others wait for you to say hi.
@@ -516,8 +518,6 @@ const startPseudoCall = () => beginCall(name, country, photo, () => {
     let li = 0, awaiting = false;
     const botFirst = seed % 2 === 0;
 
-    // Demo chats are saved under the user's own node so they show in Chats and reload with history.
-    const pcRef = ref("pseudoChats/" + myUid + "/" + seed);
     function savePseudoMsg(from, text) {
       const preview = text.length > 80 ? text.slice(0, 80) + "…" : text;
       const key = pcRef.child("msgs").push().key;
@@ -533,7 +533,6 @@ const startPseudoCall = () => beginCall(name, country, photo, () => {
       awaiting = true;
       const line = lines[li];
       const h = $("#headStatus");
-      // Show "typing…" for a few seconds (longer for longer messages) so replies feel real.
       const delay = Math.min(4500, 1600 + line.length * 35);
       setTimeout(() => {
         h.className = "status-text typing";
@@ -542,7 +541,7 @@ const startPseudoCall = () => beginCall(name, country, photo, () => {
       setTimeout(() => {
         addPseudoMsg(line, false); li++;
         savePseudoMsg("them", line);
-        awardReplyPoints();   // points are earned for replies RECEIVED, not messages sent
+        awardReplyPoints();   // points are earned for replies RECEIVED
         headOnline();
         awaiting = false;
       }, delay);
@@ -550,43 +549,47 @@ const startPseudoCall = () => beginCall(name, country, photo, () => {
 
     pseudoSend = () => {
       const text = $("#text").value.trim();
-      if (!text || awaiting) return;      // you must reply before the next demo message
-      if (!canSend()) return;             // one free message, then invite a friend
+      if (!text || awaiting) return;
+      if (!canSend()) return;
       $("#text").value = ""; autoGrow();
       addPseudoMsg(text, true);
       savePseudoMsg("me", text);
       consumeFree();
-      botSay();                           // the demo member replies to what you said (points come on their reply)
+      botSay();
     };
 
-    // Load any saved history first; only greet fresh if there's nothing yet.
+    // Load saved history first; only greet fresh if there's nothing yet.
     const existing = (await pcRef.once("value")).val();
     if (existing && existing.msgs) {
       Object.values(existing.msgs).sort((a, b) => (a.at || 0) - (b.at || 0))
         .forEach((m) => addPseudoMsg(m.text, m.from === "me"));
       li = existing.li || 0;
     } else if (botFirst) {
-      setTimeout(botSay, 700);            // this member greets first; you reply to continue
+      setTimeout(botSay, 700);
     } else {
-      setTimeout(() => $("#starters") && showStarters(), 700); // otherwise nudge you to start
+      setTimeout(() => $("#starters") && showStarters(), 700);
     }
 
-    // The demo member requests a video call after a little while. Accepting runs the call flow
-    // (rings ~3s, then asks for the video-call invite if it isn't done yet).
-      const callReqCount = (existing && existing.callReq) || 0; if (callReqCount < 2) setTimeout(() => {
-        try { pcRef.child("callReq").set(callReqCount + 1); } catch (e) {} const box = $("#msgs");
-      const ic = document.createElement("div");
-      ic.className = "notice";
-      ic.style.cssText = "background:#dcfce7;color:#15803d;font-weight:700;display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap";
-      ic.innerHTML = `<span>📹 ${esc(name)} is requesting a video call…</span>`;
-      const wrap = document.createElement("span"); wrap.style.cssText = "display:flex;gap:6px";
-      const accept = document.createElement("button"); accept.className = "btn btn-green btn-sm"; accept.textContent = "Accept";
-      const later = document.createElement("button"); later.className = "btn btn-outline btn-sm"; later.textContent = "Later";
-      wrap.appendChild(accept); wrap.appendChild(later); ic.appendChild(wrap);
-      box.appendChild(ic); box.scrollTop = box.scrollHeight;
-      accept.onclick = () => { ic.remove(); startPseudoCall(); };
-      later.onclick = () => ic.remove();
-    }, 12000);
+    // The demo member requests a video call — but only up to TWICE in total. It never asks again
+    // until the user video-calls the pseudo (which resets the counter in startPseudoCall above).
+    const callReqCount = (existing && existing.callReq) || 0;
+    if (callReqCount < 2) {
+      setTimeout(() => {
+        try { pcRef.child("callReq").set(callReqCount + 1); } catch (e) {}
+        const box = $("#msgs");
+        const ic = document.createElement("div");
+        ic.className = "notice";
+        ic.style.cssText = "background:#dcfce7;color:#15803d;font-weight:700;display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap";
+        ic.innerHTML = `<span>📹 ${esc(name)} is requesting a video call…</span>`;
+        const wrap = document.createElement("span"); wrap.style.cssText = "display:flex;gap:6px";
+        const accept = document.createElement("button"); accept.className = "btn btn-green btn-sm"; accept.textContent = "Accept";
+        const later = document.createElement("button"); later.className = "btn btn-outline btn-sm"; later.textContent = "Later";
+        wrap.appendChild(accept); wrap.appendChild(later); ic.appendChild(wrap);
+        box.appendChild(ic); box.scrollTop = box.scrollHeight;
+        accept.onclick = () => { ic.remove(); startPseudoCall(); };
+        later.onclick = () => ic.remove();
+      }, 12000);
+    }
   }
 </script>
 </body>
