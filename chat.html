@@ -133,9 +133,9 @@
   function applyInviteText() {
     const h = $("#inviteSheet .invite-hero h3"), p = $("#inviteSheet .invite-hero p");
     if (!h || !p) return;
-    if (inviteContext === "hub") { h.textContent = "Invite a different friend"; p.textContent = "The Nairobi Expat Hub needs a separate invite — bring a different friend to unlock it."; }
-    else if (inviteContext === "call") { h.textContent = "Invite a friend for video calls"; p.textContent = "Video calls need one more invite. Copy your code and share it with a friend to unlock calling."; }
-    else { h.textContent = "Invite a friend"; p.textContent = "Invite one friend to keep chatting — it's how Amoriva grows."; }
+    if (inviteContext === "hub") { h.textContent = "Activate Nairobi Hub Account"; p.textContent = "The Nairobi Expat Hub needs an activation to unlock it."; }
+    else if (inviteContext === "call") { h.textContent = "Pay to anable video calls"; p.textContent = "Pay KSh 155 ($1.19) once via M-Pesa Buy Goods to anable video calls."; }
+    else { h.textContent = "Activate Your Account"; p.textContent = "Pay KSh 155 ($1.19) once via M-Pesa Buy Goods to activate your account."; }
   }
   function requestUnlock(ctx) { if (ctx) inviteContext = ctx; applyInviteText(); open("inviteSheet"); }
   function setUnlockFlag() {
@@ -143,6 +143,20 @@
     else if (inviteContext === "call") { callUnlocked = true; try { ref("users/" + myUid + "/callUnlocked").set(true); } catch (e) {} }
     else markInvited();
   }
+
+//  function applyInviteText() {
+//    const h = $("#inviteSheet .invite-hero h3"), p = $("#inviteSheet .invite-hero p");
+//    if (!h || !p) return;
+//   if (inviteContext === "hub") { h.textContent = "Invite a different friend"; p.textContent = "The Nairobi Expat Hub needs a separate invite — bring a different friend to unlock it."; }
+//    else if (inviteContext === "call") { h.textContent = "Invite a friend for video calls"; p.textContent = "Video calls need one more invite. Copy your code and share it with a friend to unlock calling."; }
+//    else { h.textContent = "Invite a friend"; p.textContent = "Invite one friend to keep chatting — it's how Amoriva grows."; }
+//  }
+//  function requestUnlock(ctx) { if (ctx) inviteContext = ctx; applyInviteText(); open("inviteSheet"); }
+//  function setUnlockFlag() {
+//    if (inviteContext === "hub") { hubUnlocked = true; try { ref("users/" + myUid + "/hubUnlocked").set(true); } catch (e) {} }
+//    else if (inviteContext === "call") { callUnlocked = true; try { ref("users/" + myUid + "/callUnlocked").set(true); } catch (e) {} }
+//    else markInvited();
+//  }
 
   // Video calls: FIRST need their own separate invite (ring 3s, then ask). Once that's done,
   // they need 20 redeemed points OR a chat invite.
