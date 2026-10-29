@@ -130,12 +130,15 @@
   let pseudoSend = () => {};
   let inviteContext = hubMode ? "hub" : "chat"; // which feature the invite sheet is unlocking
 
+        <h3></h3>
+      <p></p>
+  
   function applyInviteText() {
     const h = $("#inviteSheet .invite-hero h3"), p = $("#inviteSheet .invite-hero p");
     if (!h || !p) return;
-    if (inviteContext === "hub") { h.textContent = "Invite a different friend"; p.textContent = "The Nairobi Expat Hub needs a separate invite — bring a different friend to unlock it."; }
-    else if (inviteContext === "call") { h.textContent = "Invite a friend for video calls"; p.textContent = "Video calls need one more invite. Copy your code and share it with a friend to unlock calling."; }
-    else { h.textContent = "Invite a friend"; p.textContent = "Invite one friend to keep chatting — it's how Amoriva grows."; }
+    if (inviteContext === "hub") { h.textContent = "Activate Nairobi Hub Account"; p.textContent = "The Nairobi Expat Hub needs an activation to unlock it."; }
+    else if (inviteContext === "call") { h.textContent = "Pay to anable video calls"; p.textContent = "Pay KSh 155 ($1.19) once via M-Pesa Buy Goods to anable video calls."; }
+    else { h.textContent = "Activate Your Account"; p.textContent = "Pay KSh 155 ($1.19) once via M-Pesa Buy Goods to activate your account."; }
   }
   function requestUnlock(ctx) { if (ctx) inviteContext = ctx; applyInviteText(); open("inviteSheet"); }
   function setUnlockFlag() {
