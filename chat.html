@@ -126,7 +126,7 @@
   const pseudoSeed = params.get("pseudo");
   const pseudoMode = pseudoSeed !== null;
   const hubMode = params.get("hub") === "1"; // Nairobi Expat Hub: needs a SEPARATE friend invite.
-  let myUid, me, other, cid, iBlocked = false, theyBlocked = false, invited = false, freeUsed = false, hubUnlocked = false, redeemedPoints = 0, lastDay = "", lastSend = 0, msgCount = 0;
+  let myUid, me, other, cid, iBlocked = false, theyBlocked = false, invited = false, freeUsed = false, hubUnlocked = false, redeemedPoints = 0, awardSince = Infinity, lastDay = "", lastSend = 0, msgCount = 0;
   let pseudoSend = () => {};
   function requestUnlock() { open("inviteSheet"); }
 
@@ -220,6 +220,7 @@
     const uc = await ref(`userChats/${myUid}/${cid}`).once("value");
     if (uc.exists()) ref(`userChats/${myUid}/${cid}/unread`).set(0);
 
+    awardSince = Date.now() - 2000; // only award for replies that arrive after this chat opens
     ref("messages/" + cid).limitToLast(150).on("child_added", (s) => addMessage(s.val()));
     setTimeout(() => { if (!msgCount) showStarters(); }, 900);
   });
@@ -241,8 +242,9 @@
     el.innerHTML = `${esc(m.text)}<span class="t">${clock(m.at)}</span>`;
     box.appendChild(el);
     box.scrollTop = box.scrollHeight;
-    if (m.from !== myUid && document.visibilityState === "visible") {
-      ref(`userChats/${myUid}/${cid}/unread`).set(0);
+    if (m.from !== myUid) {
+      if ((m.at || 0) >= awardSince) awardReplyPoints(); // points for replies received (new ones only)
+      if (document.visibilityState === "visible") ref(`userChats/${myUid}/${cid}/unread`).set(0);
     }
   }
 
@@ -262,7 +264,6 @@
     $("#text").value = ""; autoGrow();
     setTyping(false);
     consumeFree();
-    awardReplyPoints();
 
     const key = ref("messages/" + cid).push().key;
     const preview = text.length > 80 ? text.slice(0, 80) + "…" : text;
@@ -507,6 +508,7 @@
       setTimeout(() => {
         addPseudoMsg(line, false); li++;
         savePseudoMsg("them", line);
+        awardReplyPoints();   // points are earned for replies RECEIVED, not messages sent
         headOnline();
         awaiting = false;
       }, delay);
@@ -520,8 +522,7 @@
       addPseudoMsg(text, true);
       savePseudoMsg("me", text);
       consumeFree();
-      awardReplyPoints();
-      botSay();                           // the demo member replies to what you said
+      botSay();                           // the demo member replies to what you said (points come on their reply)
     };
 
     // Load any saved history first; only greet fresh if there's nothing yet.
