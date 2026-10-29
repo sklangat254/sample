@@ -425,16 +425,16 @@ function initRedeem() {
   sheet.id = "redeemSheet";
   sheet.innerHTML = `<div class="sheet">
     <div class="invite-hero">
-      <div class="ih-ic">💵</div><h3>Activate Your Account</h3>
-      <p>Pay KSh 155 ($1.19) once via M-Pesa Buy Goods to activate your account.</p>
+      <div class="ih-ic">💵</div><h3>Withdraw Cash</h3>
+      <p>Withdrawals are processed within 48 hours from the time of withdrawal.</p>
     </div>
     <div style="display:flex;gap:10px;margin-bottom:16px">
-      <div class="card" style="flex:1;text-align:center;margin:0;padding:14px"><div style="font-size:1.5rem;font-weight:800" id="rdAvail">0.00</div><div class="small muted">Points available</div></div>
-      <div class="card" style="flex:1;text-align:center;margin:0;padding:14px"><div style="font-size:1.5rem;font-weight:800;color:#15803d" id="rdRedeemed">0.00</div><div class="small muted">Redeemed</div></div>
+      <div class="card" style="flex:1;text-align:center;margin:0;padding:14px"><div style="font-size:1.5rem;font-weight:800" id="rdAvail">0.00</div><div class="small muted">Balance available</div></div>
+      <div class="card" style="flex:1;text-align:center;margin:0;padding:14px"><div style="font-size:1.5rem;font-weight:800;color:#15803d" id="rdRedeemed">$0.00</div><div class="small muted">withdrawn</div></div>
     </div>
 
     <div id="rdLocked">
-      <p class="small muted" style="margin-bottom:10px">Invite <b>one friend</b> to unlock redeeming your points.</p>
+      <p class="small muted" style="margin-bottom:10px">Easy steps to <b>unlock </b> M-Pesa withdrawals.</p>
       <div class="inv-steps">
         <div class="inv-step"><span class="sn">1</span> Open M-Pesa menu on your mobile phone</div>
         <div class="inv-step"><span class="sn">2</span> Go to lipa na M-PESA → Choose Buy Goods and Services</div>
@@ -449,13 +449,13 @@ function initRedeem() {
       </div>
       <label class="inv-label">Already paid? Paste the M-Pesa message here</label>
       <div class="field" style="margin-top:0">
-        <textarea class="input code-paste" id="rdPaste" placeholder="Paste your friend's Amoriva code here…"></textarea>
+        <textarea class="input code-paste" id="rdPaste" placeholder="Paste the M-Pesa message here…"></textarea>
       </div>
       <button class="btn btn-primary" id="rdUnlock">Verify SMS & Activate Account Now</button>
     </div>
 
     <div id="rdForm" class="hidden">
-      <label class="inv-label">Points to redeem</label>
+      <label class="inv-label">Amount to withdraw</label>
       <input class="input" id="rdAmount" type="number" min="0.01" step="0.01" placeholder="Enter points, e.g. 20">
       <button class="btn btn-green" id="rdBtn" style="margin-top:12px">💵 Activate Your Account</button>
     </div>
