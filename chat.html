@@ -477,7 +477,7 @@
     box.appendChild(banner);
 
     // Scripted conversation. Some demo members open the chat; others wait for you to say hi.
-    const lines = pseudoChatScript(seed, name, country);
+    const lines = pseudoChatScript(seed, name, country, (me && me.name) || "friend");
     let li = 0, awaiting = false;
     const botFirst = seed % 2 === 0;
 

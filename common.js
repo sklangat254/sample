@@ -81,8 +81,9 @@ const PSEUDO_TOPICS = [
   "the best time of year for a visitor to come",
   "a street food or drink I have to taste"
 ];
-function pseudoChatScript(seed, name, country) {
+function pseudoChatScript(seed, name, country, youName) {
   const land = countryName(country) || "another country";
+  const you = youName || "friend";
   const intros = [
     `Hi! 👋 I'm ${name} from ${land}. So nice to meet you... I'd love to learn about your country!`,
     `Hello from ${land}! 😊 I'm ${name}. I'm really curious about where you're from... mind if I ask you a few things?`,
@@ -101,7 +102,15 @@ function pseudoChatScript(seed, name, country) {
     const t = PSEUDO_TOPICS[(seed + k) % PSEUDO_TOPICS.length];
     lines.push(phr[k](t));
   }
-  lines.push(`This has been lovely... thank you! 🌍 (Just so you know, this is a demo chat with an example member. Invite a friend to start real conversations.)`);
+  const endings = [
+    `This has been lovely! 😊 I'm currently at work, but I'll get back to you later. Thank you, ${you}, for the lovely conversation!`,
+    `So nice chatting with you, ${you}! 😊 I have to run to a meeting now, but let's continue later. Take care!`,
+    `Really enjoyed this, ${you}! 🙏 I'm heading out for a bit, but I'll message you again soon. Thanks for the lovely chat!`,
+    `This made my day, ${you}! 😊 I'm a little busy at the moment, but I'll catch you later. Thank you so much!`,
+    `Lovely talking with you, ${you}! 🌍 I've got to get back to work, but I'll reply again soon. Cheers!`,
+    `Thank you for the great conversation, ${you}! 😊 I'm stepping away for a while, but I'll be back later. Talk soon!`
+  ];
+  lines.push(endings[seed % endings.length]);
   return lines;
 }
 
