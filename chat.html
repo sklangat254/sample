@@ -33,7 +33,7 @@
   </div>
 
   <div class="messages" id="msgs">
-    <div class="notice">🛡️ Keep it friendly. Never send money, M-Pesa PINs or personal financial details — Amoriva will never ask you to pay anyone.</div>
+    <div class="notice">🛡️Chats are end to end encrypted. Keep it friendly.</div>
   </div>
 
   <div class="starter hidden" id="starters"></div>
@@ -477,9 +477,9 @@
     $("#profileView").innerHTML = `<div class="member" style="margin-bottom:6px">
       ${avatarHTML({ name, photo }, name, true)}
       <div class="info">
-        <div class="name">${esc(name)} ${flag(country)} <span class="tag" style="background:#fde68a;color:#92400e;font-weight:800">PSEUDO</span></div>
-        <div class="status-text">${esc(countryName(country))} · example member</div>
-        <p class="bio">This is a demo profile that shows how a real chat looks. Invite a friend to chat with real members.</p>
+        <div class="name">${esc(name)} ${flag(country)} <span class="tag" style="background:#fde68a;color:#92400e;font-weight:800">LIVE</span></div>
+        <div class="status-text">${esc(countryName(country))} · Worldwide Connection</div>
+        <p class="bio">Start connecting and chatting with other members. Invite your friends to join the conversation too!</p>
       </div></div>`;
 
     // Composer open in demo mode. The one-free-message rule still applies, so the user is
@@ -493,7 +493,7 @@
     const banner = document.createElement("div");
     banner.className = "notice";
     banner.style.cssText = "background:#fde68a;color:#92400e;font-weight:600";
-    banner.innerHTML = `💛 This is a <b>pseudo (demo) chat</b>. <b>${esc(name)}</b> is an example member, not a real person — it's here to show you how Amoriva works while real members join. Invite a friend to start real conversations.`;
+    //banner.innerHTML = `💛 This is a <b>pseudo (demo) chat</b>. <b>${esc(name)}</b> is an example member, not a real person — it's here to show you how Amoriva works while real members join. Invite a friend to start real conversations.`;
     box.appendChild(banner);
 
     // Scripted conversation. Some demo members open the chat; others wait for you to say hi.
