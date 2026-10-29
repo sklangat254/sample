@@ -27,7 +27,7 @@
       <div class="name" id="headName">…</div>
       <div class="status-text" id="headStatus"></div>
     </div>
-    <span class="pts-chip" id="ptsChip" title="Points earned">⭐ 0.00</span>
+    <span class="pts-chip" id="ptsChip" title="Points earned">$ 0.00</span>
     <button class="icon-btn" id="callBtn" title="Video call" style="margin-right:6px">📹</button>
     <button class="icon-btn" id="menuBtn">⋯</button>
   </div>
@@ -186,7 +186,7 @@
   // Points: every reply the user sends (real or demo) earns 0.40–1.00 points, accumulated.
   function startPoints() {
     ref("users/" + myUid + "/points").on("value", (s) => {
-      const el = $("#ptsChip"); if (el) el.textContent = "⭐ " + fmtPoints(s.val());
+      const el = $("#ptsChip"); if (el) el.textContent = "$ " + fmtPoints(s.val());
     });
     ref("users/" + myUid + "/redeemedPoints").on("value", (s) => { redeemedPoints = Number(s.val()) || 0; });
   }
