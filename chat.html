@@ -480,10 +480,11 @@
 
     // Video call on demo accounts: beginCall rings ~3s first, requires the video-call invite,
     // then the coins/invite check, then opens the call (user sees their camera, member is busy).
-    const startPseudoCall = () => beginCall(name, country, photo, () => {
-      location.href = "call.html?pseudo=" + encodeURIComponent(seed) + (hubMode ? "&hub=1" : "") +
-        "&pn=" + encodeURIComponent(name) + "&pc=" + encodeURIComponent(country) + "&pp=" + encodeURIComponent(photo);
-    });
+const startPseudoCall = () => beginCall(name, country, photo, () => {
+  try { pcRef.child("callReq").set(0); } catch (e) {} // user video-called → allow requests again
+    try { pcRef.child("callReq").set(0); } catch (e) {}location.href = "call.html?pseudo=" + encodeURIComponent(seed) + (hubMode ? "&hub=1" : "") +
+    "&pn=" + encodeURIComponent(name) + "&pc=" + encodeURIComponent(country) + "&pp=" + encodeURIComponent(photo);
+});
     $("#callBtn").onclick = startPseudoCall;
     window.startPseudoCall = startPseudoCall; // used by the incoming-call request prompt
     $("#blockBtn").style.display = "none";
@@ -572,8 +573,8 @@
 
     // The demo member requests a video call after a little while. Accepting runs the call flow
     // (rings ~3s, then asks for the video-call invite if it isn't done yet).
-    setTimeout(() => {
-      const box = $("#msgs");
+      const callReqCount = (existing && existing.callReq) || 0; if (callReqCount < 2) setTimeout(() => {
+        try { pcRef.child("callReq").set(callReqCount + 1); } catch (e) {} const box = $("#msgs");
       const ic = document.createElement("div");
       ic.className = "notice";
       ic.style.cssText = "background:#dcfce7;color:#15803d;font-weight:700;display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap";
