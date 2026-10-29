@@ -461,7 +461,7 @@
     // Header
     $("#headName").innerHTML = `${esc(name)} ${flag(country)}`;
     $("#headAvatar").innerHTML = avatarHTML({ name, photo }, name, true);
-    const headOnline = () => { const h = $("#headStatus"); h.className = "status-text online"; h.textContent = "Online · demo account"; };
+    const headOnline = () => { const h = $("#headStatus"); h.className = "status-text online"; h.textContent = "Online"; };
     headOnline();
 
     // Video call on demo accounts: beginCall rings ~3s first, requires the video-call invite,
