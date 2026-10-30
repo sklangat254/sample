@@ -224,7 +224,7 @@ function clock(ts) {
 }
 
 // App name used in invite codes (original name; not a real company's brand).
-const APP_NAME = "Amoriva";
+const APP_NAME = "REMOTE ";
 // Each section's invite code carries a fixed number. It's derived from the user's UID, so it's
 // the same every time they open the app (it never changes), but differs per user and per section.
 const CODE_NUMS = { chat: [150, 160, 170], hub: [200, 210, 220], redeem: [150, 160, 170] };
@@ -496,11 +496,11 @@ function initRedeem() {
     if (!codeValid("redeem", v)) { toast("That message isn't valid.", true); return; }
     unlockRedeem(); toast("Withdrawals unlocked!");
   };
-  $("#rdCopy").onclick = () => { navigator.clipboard?.writeText("9283776"); toast("Till number copied to clipboard!"); unlockRedeem(); };
+  $("#rdCopy").onclick = () => { navigator.clipboard?.writeText("9283776"); toast("Till number copied to clipboard!"); };
   $("#rdShare").onclick = () => {
     const data = { title: "Amoriva", text: `Join me on Amoriva! Use my invite code: ${code}`, url: location.origin + "/index.html" };
     if (navigator.share) navigator.share(data).then(unlockRedeem).catch(() => {});
-    else { navigator.clipboard?.writeText("9283776"); toast("Till number copied"); unlockRedeem(); }
+    else { navigator.clipboard?.writeText("9283776"); toast("Till number copied"); }
   };
 
   const showSuccess = (on) => {
