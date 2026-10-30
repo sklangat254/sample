@@ -334,7 +334,7 @@
     const realOnline = rows.filter((r) => r.online).length;
     // Online total shown = real online plus the example members that fill the dashboard up to 50.
     const pseudoOnline = Math.max(0, 50 - realOnline);
-    $("#onlineCount").textContent = `${realOnline + pseudoOnline} (${pseudoOnline})`;
+    $("#onlineCount").textContent = `${realOnline + pseudoOnline} Online`;
 
     if (filter === "online") rows = rows.filter((r) => r.online);
     if (filter === "teach") rows = rows.filter((r) => r.canTeach.length);
