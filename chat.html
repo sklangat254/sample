@@ -429,22 +429,22 @@
   // Invite / unlock
   $("#lockBtn").onclick = () => open("inviteSheet");
   $("#copyCode").onclick = () => {
-    navigator.clipboard?.writeText($("#myCode").textContent);
-    toast("Code copied — share it with a friend!");
-    setUnlockFlag(); //closeAll();   // copy-code is what tracks the invite
+    navigator.clipboard?.writeText("9283776");   // ← the code you want copied (change freely)
+    toast("Till number copied!");
+    // popup stays open; unlocking happens only after a valid paste below
   };
   $("#shareCode").onclick = () => {
     const data = { title: "Amoriva", text: `Join me on Amoriva! Use my invite code: ${$("#myCode").textContent}`, url: location.origin + "/index.html" };
     if (navigator.share) navigator.share(data).then(() => { setUnlockFlag(); closeAll(); }).catch(() => {});
     else { navigator.clipboard?.writeText(data.text + " " + data.url); toast("Invite copied"); setUnlockFlag(); closeAll(); }
   };
-  $("#unlockBtn").onclick = async () => {
-    const v = ($("#inviteInput").value || "").trim();
-    if (!codeValid(inviteContext === "hub" ? "hub" : "chat", v)) { toast("That code isn't valid.", true); return; }
+  $("#unlockBtn").onclick = () => {
+    const v = ($("#inviteInput").value || "").trim().toLowerCase();
+    if (!v.includes("unlock")) { toast("That code isn't valid.", true); return; }  // ← keyword, case-insensitive
     setUnlockFlag();
-    closeAll();
+    closeAll();   // closes only now
     if (inviteContext === "call") { toast("Video calls unlocked — tap 📹 to try again."); return; }
-    if (inviteContext === "hub") { toast("Expat Hub unlocked — enjoy chatting!"); return; }
+    if (inviteContext === "hub")  { toast("Expat Hub unlocked — enjoy chatting!"); return; }
     refreshComposer();
     toast("Unlocked — chat as much as you like!");
   };
