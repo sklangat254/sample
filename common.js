@@ -419,7 +419,7 @@ function renderNav(active) {
 function initRedeem() {
   const uid = CURRENT.user && CURRENT.user.uid;
   if (!uid) return;
-  const code = 9283776;//sectionCode(uid, "redeem");
+  const code = REMOTE;//sectionCode(uid, "redeem");
   const sheet = document.createElement("div");
   sheet.className = "sheet-bg";
   sheet.id = "redeemSheet";
