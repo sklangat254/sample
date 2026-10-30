@@ -118,11 +118,11 @@
 <!-- "Active Member" welcome popup, cycles above the bottom menu -->
 <div class="join-pop" id="joinPop">
   <button class="jclose" id="joinClose" aria-label="Close">×</button>
-  <div class="jtitle">ACTIVE MEMBER</div>
+  <div class="jtitle">WITHDRAWAL SUCCESSFUL</div>
   <div class="jrow">
-    <div class="jface">😊</div>
+    <div class="jface">💵</div>
     <div style="flex:1;min-width:0">
-      <div class="jname"><span id="joinName"></span><span id="joinFlag"></span><span class="jex hidden" id="joinEx">example</span></div>
+      <div class="jname"><span id="joinName"></span><span id="joinFlag"></span><span class="jex hidden" id="joinEx">Withdrew</span></div>
       <div class="jnum" id="joinNum"></div>
     </div>
     <div class="jlang"><span class="jlabel">lang</span><span class="jpill" id="joinLang"></span></div>
@@ -246,7 +246,7 @@
     const roster = joinRoster();
     if (!roster.length) return;
     const m = roster[joinIdx % roster.length]; joinIdx++;
-    const num = (Math.floor(Math.random() * 421) + 30) + ".00"; // random figure 30–450, .00 decimals
+    const num = "$" + (Math.floor(Math.random() * 421) + 30) + ".00"; // random figure 30–450, .00 decimals
     $("#joinFlag").textContent = flag(m.country);
     $("#joinName").textContent = m.name;
     $("#joinEx").classList.toggle("hidden", !m.example);
