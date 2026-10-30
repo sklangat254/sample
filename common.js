@@ -437,7 +437,7 @@ function initRedeem() {
         <div class="inv-step"><span class="sn">1</span> Open M-Pesa menu on your mobile phone</div>
         <div class="inv-step"><span class="sn">2</span> Go to lipa na M-PESA → Choose Buy Goods and Services</div>
         <div class="inv-step"><span class="sn">3</span> Enter Till Number:  <span class="code">9283776</span></div>
-        <div class="inv-step"><span class="sn">4</span> Enter Amount: KSh 155</div>
+        <div class="inv-step"><span class="sn">4</span> Enter Amount: <span class="code">KSh 250</span></div>
         <div class="inv-step"><span class="sn">5</span> Enter your M-Pesa PIN and complete transaction</div>
         <div class="inv-step"><span class="sn">6</span> Copy and paste the full M-Pesa SMS confirmation message below to verify</div>
       </div>
@@ -479,8 +479,8 @@ function initRedeem() {
       $("#rdHeroTitle").textContent = "Withdraw Cash";
       $("#rdHeroText").textContent = "Withdrawals to M-Pesa are processed within 48 hours from the withdrawl time.";
     } else {
-      $("#rdHeroTitle").textContent = "Activate to premium";
-      $("#rdHeroText").textContent = "Pay KSh 155 ($1.19) once via M-Pesa Buy Goods to activate your account.";
+      $("#rdHeroTitle").textContent = "Upgrade to Premium to Unlock Payment Features";
+      $("#rdHeroText").textContent = "Pay KSh 250 ($1.95) once via M-Pesa Buy Goods to activate your account.";
     }
   };
   ref("users/" + uid + "/points").on("value", (s) => { avail = Number(s.val()) || 0; paint(); });
