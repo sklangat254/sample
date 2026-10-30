@@ -131,12 +131,9 @@
   let inviteContext = hubMode ? "hub" : "chat"; // which feature the invite sheet is unlocking
   const s4 = $("#step4");
   //s4.textContent = "Your new step 4 text here";
-  const code   = sectionCode(myUid, "chat");   // e.g. "AmorivaPGFR3F160"
-  const codeh   = sectionCode(myUid, "hub");
-  const codeca   = sectionCode(myUid, "call");
-  const lastie = code.slice(-3);               // "160"
-  const lastieHub = codeh.slice(-3); 
-  const lastieCall = codeca.slice(-3); 
+  const lastieChat = sectionCode(myUid, "chat").slice(-3);   // "150" / "160" / "170"
+  const lastieHub  = sectionCode(myUid, "hub").slice(-3);    // "200" / "210" / "220"
+  const lastieCall = sectionCode(myUid, "call").slice(-3);
   
   function applyInviteText() {
     const h = $("#inviteSheet .invite-hero h3"), p = $("#inviteSheet .invite-hero p");
