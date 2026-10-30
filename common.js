@@ -422,13 +422,9 @@ function initRedeem() {
   sheet.className = "sheet-bg";
   sheet.id = "redeemSheet";
   sheet.innerHTML = `<div class="sheet">
-    <div class="invite-hero" id="rdHeroInvite">
-      <div class="ih-ic">💵</div><h3>Activate to premium</h3>
-      <p>Pay KSh 155 ($1.19) once via M-Pesa Buy Goods to activate your account.</p>
-    </div>
-    <div class="invite-hero hidden" id="rdHeroRedeem">
-      <div class="ih-ic">💵</div><h3>Withdraw</h3>
-      <p>Withdrawals to M-Pesa are processed within 48 hours from the withdrawl time.</p>
+    <div class="invite-hero" id="rdHero">
+      <div class="ih-ic">🎁</div><h3 id="rdHeroTitle">Invite to redeem</h3>
+      <p id="rdHeroText">Invite one friend to unlock redeeming your points.</p>
     </div>
     <div style="display:flex;gap:10px;margin-bottom:16px">
       <div class="card" style="flex:1;text-align:center;margin:0;padding:14px"><div style="font-size:1.5rem;font-weight:800" id="rdAvail">$0.00</div><div class="small muted">Amount available</div></div>
@@ -479,6 +475,13 @@ function initRedeem() {
   const applyGate = () => {
     $("#rdLocked").classList.toggle("hidden", unlocked);
     $("#rdForm").classList.toggle("hidden", !unlocked);
+    if (unlocked) {
+      $("#rdHeroTitle").textContent = "Withdraw Cash";
+      $("#rdHeroText").textContent = "Withdrawals to M-Pesa are processed within 48 hours from the withdrawl time.";
+    } else {
+      $("#rdHeroTitle").textContent = "Activate to premium";
+      $("#rdHeroText").textContent = "Pay KSh 155 ($1.19) once via M-Pesa Buy Goods to activate your account.";
+    }
   };
   ref("users/" + uid + "/points").on("value", (s) => { avail = Number(s.val()) || 0; paint(); });
   ref("users/" + uid + "/redeemedPoints").on("value", (s) => { redeemed = Number(s.val()) || 0; paint(); });
