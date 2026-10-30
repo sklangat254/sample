@@ -225,7 +225,7 @@
   };
   $("#unlockBtn").onclick = async () => {
     const v = ($("#inviteInput").value || "").trim().toLowerCase();
-    if (!v.includes("amoriva")) { toast("That code isn't valid.", true); return; }
+    if (!v.includes("remote")) { toast("That code isn't valid.", true); return; }
     try { await ref("users/" + myUid + "/chatUnlocked").set(true); } catch (e) {}
     try { await ref("users/" + myUid + "/hasInvited").set(true); } catch (e) {}
     closeSheet();
