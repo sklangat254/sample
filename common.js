@@ -449,7 +449,7 @@ function initRedeem() {
       </div>
       <div class="stack" style="margin-bottom:14px">
         <button class="btn btn-green" id="rdCopy">📋 Copy Till Number</button>
-        <button class="btn btn-outline" >📤 Share invite</button>
+        <button  id="rdShare">📤 Share invite</button>
       </div>
       <label class="inv-label">Already paid? Paste the M-Pesa message here</label>
       <div class="field" style="margin-top:0">
