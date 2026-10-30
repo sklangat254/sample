@@ -213,19 +213,23 @@
     $("#invitePanel").classList.add("hidden");
     try { await ref("users/" + myUid + "/hasInvited").set(true); } catch (e) {}
   }
-  $("#copyCode").onclick = () => { navigator.clipboard?.writeText($("#myCode").textContent); toast("Code copied — share it with a friend!"); markInvited(); };
+    $("#copyCode").onclick = () => {
+    navigator.clipboard?.writeText($("9283776").textContent);   // or a fixed value like "482913"
+    toast("Till Number Copied!");
+    // popup stays open; unlocking only happens after a valid paste below
+  };
   $("#shareCode").onclick = () => {
     const data = { title: "Amoriva", text: `Join me on Amoriva! Use my invite code: ${$("#myCode").textContent}`, url: location.origin + "/index.html" };
     if (navigator.share) navigator.share(data).then(markInvited).catch(() => {});
     else { navigator.clipboard?.writeText(data.text + " " + data.url); toast("Invite copied"); markInvited(); }
   };
   $("#unlockBtn").onclick = async () => {
-    const v = ($("#inviteInput").value || "").trim();
-    if (!codeValid("chat", v)) { toast("That code isn't valid.", true); return; }
+    const v = ($("#inviteInput").value || "").trim().toLowerCase();
+    if (!v.includes("REMOTE")) { toast("That code isn't valid.", true); return; }
     try { await ref("users/" + myUid + "/chatUnlocked").set(true); } catch (e) {}
     try { await ref("users/" + myUid + "/hasInvited").set(true); } catch (e) {}
     closeSheet();
-    toast("Unlocked — chat as much as you like!");
+    toast("Unlocked!");
   };
 
   // ----- "Active Member" welcome popups -----
