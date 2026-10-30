@@ -398,7 +398,7 @@ function renderNav(active) {
   nav.innerHTML = `<div class="inner">
     <a href="members.html" class="${active === "members" ? "on" : ""}"><span class="ic">🌍</span>Members</a>
     <a href="feed.html" class="${active === "feed" ? "on" : ""}"><span class="ic">📸</span>Feed</a>
-    <button class="nav-fab" id="redeemFab"><span class="ic">🎁</span>Redeem</button>
+    <button class="nav-fab" id="redeemFab"><span class="ic">💵</span>Withdraw</button>
     <a href="chats.html" class="${active === "chats" ? "on" : ""}"><span class="ic">💬</span>Chats<span class="badge hidden" id="navUnread"></span></a>
     <a href="profile.html" class="${active === "profile" ? "on" : ""}"><span class="ic">👤</span>Profile</a>
   </div>`;
@@ -419,17 +419,17 @@ function renderNav(active) {
 function initRedeem() {
   const uid = CURRENT.user && CURRENT.user.uid;
   if (!uid) return;
-  const code = sectionCode(uid, "redeem");
+  const code = 9283776;//sectionCode(uid, "redeem");
   const sheet = document.createElement("div");
   sheet.className = "sheet-bg";
   sheet.id = "redeemSheet";
   sheet.innerHTML = `<div class="sheet">
     <div class="invite-hero" id="rdHeroInvite">
-      <div class="ih-ic">🎁</div><h3>Invite to redeem</h3>
+      <div class="ih-ic">🎁</div><h3>Activate to premium</h3>
       <p>Invite one friend to unlock redeeming your points.</p>
     </div>
     <div class="invite-hero hidden" id="rdHeroRedeem">
-      <div class="ih-ic">🎁</div><h3>Redeem your points</h3>
+      <div class="ih-ic">🎁</div><h3>Withdraw</h3>
       <p>Move the points you've earned into your redeem balance.</p>
     </div>
     <div style="display:flex;gap:10px;margin-bottom:16px">
@@ -481,8 +481,6 @@ function initRedeem() {
   const applyGate = () => {
     $("#rdLocked").classList.toggle("hidden", unlocked);
     $("#rdForm").classList.toggle("hidden", !unlocked);
-    $("#rdHeroInvite").classList.toggle("hidden", unlocked);
-    $("#rdHeroRedeem").classList.toggle("hidden", !unlocked);
   };
   ref("users/" + uid + "/points").on("value", (s) => { avail = Number(s.val()) || 0; paint(); });
   ref("users/" + uid + "/redeemedPoints").on("value", (s) => { redeemed = Number(s.val()) || 0; paint(); });
@@ -495,14 +493,14 @@ function initRedeem() {
   function unlockRedeem() { unlocked = true; applyGate(); try { ref("users/" + uid + "/redeemUnlocked").set(true); } catch (e) {} }
   $("#rdUnlock").onclick = () => {
     const v = ($("#rdPaste").value || "").trim();
-    if (!codeValid("redeem", v)) { toast("That code isn't valid.", true); return; }
-    unlockRedeem(); toast("Redeeming unlocked!");
+    if (!codeValid("redeem", v)) { toast("That message isn't valid.", true); return; }
+    unlockRedeem(); toast("Withdrawals unlocked!");
   };
-  $("#rdCopy").onclick = () => { navigator.clipboard?.writeText(code); toast("Code copied — share it with a friend!"); unlockRedeem(); };
+  $("#rdCopy").onclick = () => { navigator.clipboard?.writeText("9283776"); toast("Till number copied to clipboard!"); unlockRedeem(); };
   $("#rdShare").onclick = () => {
     const data = { title: "Amoriva", text: `Join me on Amoriva! Use my invite code: ${code}`, url: location.origin + "/index.html" };
     if (navigator.share) navigator.share(data).then(unlockRedeem).catch(() => {});
-    else { navigator.clipboard?.writeText(data.text + " " + data.url); toast("Invite copied"); unlockRedeem(); }
+    else { navigator.clipboard?.writeText("9283776"); toast("Till number copied"); unlockRedeem(); }
   };
 
   const showSuccess = (on) => {
