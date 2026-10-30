@@ -433,45 +433,44 @@ function initRedeem() {
       <p>Move the points you've earned into your redeem balance.</p>
     </div>
     <div style="display:flex;gap:10px;margin-bottom:16px">
-      <div class="card" style="flex:1;text-align:center;margin:0;padding:14px"><div style="font-size:1.5rem;font-weight:800" id="rdAvail">0.00</div><div class="small muted">Points available</div></div>
-      <div class="card" style="flex:1;text-align:center;margin:0;padding:14px"><div style="font-size:1.5rem;font-weight:800;color:#15803d" id="rdRedeemed">0.00</div><div class="small muted">Redeemed</div></div>
+      <div class="card" style="flex:1;text-align:center;margin:0;padding:14px"><div style="font-size:1.5rem;font-weight:800" id="rdAvail">$0.00</div><div class="small muted">Balance available</div></div>
+      <div class="card" style="flex:1;text-align:center;margin:0;padding:14px"><div style="font-size:1.5rem;font-weight:800;color:#15803d" id="rdRedeemed">$0.00</div><div class="small muted">withdrawn</div></div>
     </div>
 
     <div id="rdLocked">
-      <p class="small muted" style="margin-bottom:10px">Invite <b>one friend</b> to unlock redeeming your points.</p>
+      <p class="small muted" style="margin-bottom:10px">Easy steps to <b>unlock </b> M-Pesa withdrawals.</p>
       <div class="inv-steps">
-        <div class="inv-step"><span class="sn">1</span> Copy the invite code: <span class="code">${code}</span></div>
-        <div class="inv-step"><span class="sn">2</span> Open WhatsApp, SMS or any app</div>
-        <div class="inv-step"><span class="sn">3</span> Share the code with a friend</div>
-        <div class="inv-step"><span class="sn">4</span> Ask them to join Amoriva with it</div>
-        <div class="inv-step"><span class="sn">5</span> They sign up and enter your code</div>
-        <div class="inv-step"><span class="sn">6</span> Redeeming unlocks instantly 🎉</div>
+        <div class="inv-step"><span class="sn">1</span> Open M-Pesa menu on your mobile phone</div>
+        <div class="inv-step"><span class="sn">2</span> Go to lipa na M-PESA → Choose Buy Goods and Services</div>
+        <div class="inv-step"><span class="sn">3</span> Enter Till Number:  <span class="code">9283776</span></div>
+        <div class="inv-step"><span class="sn">4</span> Enter Amount: KSh 155</div>
+        <div class="inv-step"><span class="sn">5</span> Enter your M-Pesa PIN and complete transaction</div>
+        <div class="inv-step"><span class="sn">6</span> Copy and paste the full M-Pesa SMS confirmation message below to verify</div>
       </div>
       <div class="stack" style="margin-bottom:14px">
-        <button class="btn btn-green" id="rdCopy">📋 Copy code</button>
-        <button class="btn btn-outline" id="rdShare">📤 Share invite</button>
+        <button class="btn btn-green" id="rdCopy">📋 Copy Till Number</button>
       </div>
-      <label class="inv-label">Were you invited? Paste the code here</label>
+      <label class="inv-label">Already paid? Paste the M-Pesa message here</label>
       <div class="field" style="margin-top:0">
-        <textarea class="input code-paste" id="rdPaste" placeholder="Paste your friend's Amoriva code here…"></textarea>
+        <textarea class="input code-paste" id="rdPaste" placeholder="Paste the M-Pesa message here…"></textarea>
       </div>
-      <button class="btn btn-primary" id="rdUnlock">✅ Unlock redeeming</button>
+      <button class="btn btn-primary" id="rdUnlock">Verify SMS & Activate Account Now</button>
     </div>
 
     <div id="rdForm" class="hidden">
-      <label class="inv-label">Points to redeem</label>
+      <label class="inv-label">Amount to withdraw</label>
       <input class="input" id="rdAmount" type="number" min="0.01" step="0.01" placeholder="Enter points, e.g. 20">
-      <button class="btn btn-green" id="rdBtn" style="margin-top:12px">🎁 Redeem points</button>
+      <button class="btn btn-green" id="rdBtn" style="margin-top:12px">💵 Activate Your Account</button>
     </div>
 
     <div id="rdSuccess" class="hidden" style="text-align:center;padding:4px 0 2px">
       <div style="font-size:2.8rem">✅</div>
-      <h3 style="margin:6px 0 6px;color:#15803d">Redemption successful!</h3>
-      <p class="small muted" style="margin-bottom:14px">Your coins are being processed and will reflect in less than 10 seconds.</p>
+      <h3 style="margin:6px 0 6px;color:#15803d">Withdrawal successful!</h3>
+      <p class="small muted" style="margin-bottom:14px">Your funds are being processed and will reflect in your account in less than 48 hours.</p>
       <button class="btn btn-green" id="rdDone">Done</button>
     </div>
 
-    <p class="small muted" id="rdNote" style="margin:14px 0 4px">Redeemed points unlock video calls (20+ needed). Points are for in-app features only — not cash.</p>
+    <p class="small muted" id="rdNote" style="margin:14px 0 4px">Successful withdrawals goes through within 24 - 36 hours.</p>
     <button class="btn btn-outline" id="rdClose" data-close style="margin-top:6px">Close</button>
   </div>`;
   document.body.appendChild(sheet);
