@@ -424,7 +424,11 @@ function initRedeem() {
   sheet.className = "sheet-bg";
   sheet.id = "redeemSheet";
   sheet.innerHTML = `<div class="sheet">
-    <div class="invite-hero">
+    <div class="invite-hero" id="rdHeroInvite">
+      <div class="ih-ic">🎁</div><h3>Invite to redeem</h3>
+      <p>Invite one friend to unlock redeeming your points.</p>
+    </div>
+    <div class="invite-hero hidden" id="rdHeroRedeem">
       <div class="ih-ic">🎁</div><h3>Redeem your points</h3>
       <p>Move the points you've earned into your redeem balance.</p>
     </div>
@@ -477,6 +481,8 @@ function initRedeem() {
   const applyGate = () => {
     $("#rdLocked").classList.toggle("hidden", unlocked);
     $("#rdForm").classList.toggle("hidden", !unlocked);
+    $("#rdHeroInvite").classList.toggle("hidden", unlocked);
+    $("#rdHeroRedeem").classList.toggle("hidden", !unlocked);
   };
   ref("users/" + uid + "/points").on("value", (s) => { avail = Number(s.val()) || 0; paint(); });
   ref("users/" + uid + "/redeemedPoints").on("value", (s) => { redeemed = Number(s.val()) || 0; paint(); });
