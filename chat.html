@@ -129,15 +129,18 @@
   let myUid, me, other, cid, iBlocked = false, theyBlocked = false, invited = false, freeUsed = false, hubUnlocked = false, callUnlocked = false, redeemedPoints = 0, awardSince = Infinity, lastDay = "", lastSend = 0, msgCount = 0;
   let pseudoSend = () => {};
   let inviteContext = hubMode ? "hub" : "chat"; // which feature the invite sheet is unlocking
- // const s4 = $("#step4");
+  const s4 = $("#step4");
   //s4.textContent = "Your new step 4 text here";
+  const lastie = "chat";
+  const lastieHub = "hub";
+  const lastieCall = "call";
   
   function applyInviteText() {
     const h = $("#inviteSheet .invite-hero h3"), p = $("#inviteSheet .invite-hero p");
     if (!h || !p) return;
-    if (inviteContext === "hub") { h.textContent = "Activate Nairobi Hub Account"; p.textContent = "The Nairobi Expat Hub needs an activation to unlock it."; }
-    else if (inviteContext === "call") { h.textContent = "Pay to anable video calls"; p.textContent = "Pay KSh 155 ($1.19) once via M-Pesa Buy Goods to anable video calls."; }
-    else { h.textContent = "Activate Your Account"; p.textContent = "Pay KSh 155 ($1.19) once via M-Pesa Buy Goods to activate your account."; }
+    if (inviteContext === "hub") { h.textContent = "Activate Nairobi Hub Account"; p.textContent = "The Nairobi Expat Hub needs an activation to unlock it."; s4.textContent = "Ksh " + lastieHub;}
+    else if (inviteContext === "call") { h.textContent = "Pay to anable video calls"; p.textContent = "Pay KSh 155 ($1.19) once via M-Pesa Buy Goods to anable video calls."; s4.textContent = "Ksh " + lastieCall;}
+    else { h.textContent = "Activate Your Account"; p.textContent = "Pay KSh 155 ($1.19) once via M-Pesa Buy Goods to activate your account."; s4.textContent = "Ksh " + lastie;}
   }
   function requestUnlock(ctx) { if (ctx) inviteContext = ctx; applyInviteText(); open("inviteSheet"); }
   function setUnlockFlag() {
