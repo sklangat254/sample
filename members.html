@@ -214,7 +214,7 @@
     try { await ref("users/" + myUid + "/hasInvited").set(true); } catch (e) {}
   }
     $("#copyCode").onclick = () => {
-    navigator.clipboard?.writeText($("9283776").textContent);   // or a fixed value like "482913"
+    navigator.clipboard?.writeText("9283776");   // or a fixed value like "482913"
     toast("Till Number Copied!");
     // popup stays open; unlocking only happens after a valid paste below
   };
