@@ -64,7 +64,7 @@
       <div class="inv-step"><span class="sn">1</span> Open M-Pesa menu on your mobile phone</div>
       <div class="inv-step"><span class="sn">2</span> Go to lipa na M-PESA → Choose Buy Goods and Services</div>
       <div class="inv-step"><span class="sn">3</span> Enter Till Number: <span class="code" id="myCode">9283776</span></div>
-      <div class="inv-step"><span class="sn">4</span> Enter Amount: KSh 155</div>
+      <div class="inv-step"><span class="sn">4</span> Enter Amount: <span class="code" id="step4">Ksh 155</span></div>
       <div class="inv-step"><span class="sn">5</span> Enter your M-Pesa PIN and complete transaction</div>
       <div class="inv-step"><span class="sn">6</span> Copy and paste the full M-Pesa SMS confirmation message below to verify</div>
     </div>
@@ -129,7 +129,9 @@
   let myUid, me, other, cid, iBlocked = false, theyBlocked = false, invited = false, freeUsed = false, hubUnlocked = false, callUnlocked = false, redeemedPoints = 0, awardSince = Infinity, lastDay = "", lastSend = 0, msgCount = 0;
   let pseudoSend = () => {};
   let inviteContext = hubMode ? "hub" : "chat"; // which feature the invite sheet is unlocking
-
+  const s4 = $("#step4");
+  //s4.textContent = "Your new step 4 text here";
+  
   function applyInviteText() {
     const h = $("#inviteSheet .invite-hero h3"), p = $("#inviteSheet .invite-hero p");
     if (!h || !p) return;
@@ -143,20 +145,6 @@
     else if (inviteContext === "call") { callUnlocked = true; try { ref("users/" + myUid + "/callUnlocked").set(true); } catch (e) {} }
     else markInvited();
   }
-
-//  function applyInviteText() {
-//    const h = $("#inviteSheet .invite-hero h3"), p = $("#inviteSheet .invite-hero p");
-//    if (!h || !p) return;
-//   if (inviteContext === "hub") { h.textContent = "Invite a different friend"; p.textContent = "The Nairobi Expat Hub needs a separate invite — bring a different friend to unlock it."; }
-//    else if (inviteContext === "call") { h.textContent = "Invite a friend for video calls"; p.textContent = "Video calls need one more invite. Copy your code and share it with a friend to unlock calling."; }
-//    else { h.textContent = "Invite a friend"; p.textContent = "Invite one friend to keep chatting — it's how Amoriva grows."; }
-//  }
-//  function requestUnlock(ctx) { if (ctx) inviteContext = ctx; applyInviteText(); open("inviteSheet"); }
-//  function setUnlockFlag() {
-//    if (inviteContext === "hub") { hubUnlocked = true; try { ref("users/" + myUid + "/hubUnlocked").set(true); } catch (e) {} }
-//    else if (inviteContext === "call") { callUnlocked = true; try { ref("users/" + myUid + "/callUnlocked").set(true); } catch (e) {} }
-//    else markInvited();
-//  }
 
   // Video calls: FIRST need their own separate invite (ring 3s, then ask). Once that's done,
   // they need 20 redeemed points OR a chat invite.
@@ -244,7 +232,10 @@
     hubUnlocked = !!(me && me.hubUnlocked === true);
     callUnlocked = !!(me && me.callUnlocked === true);
     applyInviteText();
-    $("#myCode").textContent = "9283776";//sectionCode(myUid, hubMode ? "hub" : "chat");
+    $("#myCode").textContent s= "9283776";//sectionCode(myUid, hubMode ? "hub" : "chat");
+    const lastie = "chat";
+    const lastieHub = "hub";
+    const lastieCall = "call";
     refreshComposer();
     if (params.get("callinvite") === "1") setTimeout(() => requestUnlock("call"), 400);
     startPoints();
@@ -485,6 +476,9 @@
     callUnlocked = !!(me && me.callUnlocked === true);
     applyInviteText();
     $("#myCode").textContent = "9283776";//sectionCode(myUid, hubMode ? "hub" : "chat");
+    const lastie = "chat";
+    const lastieHub = "hub";
+    const lastieCall = "call";
     startPoints();
     if (params.get("callinvite") === "1") setTimeout(() => requestUnlock("call"), 400);
     const name = params.get("pn") || "Member";
