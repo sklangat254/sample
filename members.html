@@ -141,13 +141,13 @@
       <div class="inv-step"><span class="sn">1</span> Open M-Pesa menu on your mobile phone</div>
       <div class="inv-step"><span class="sn">2</span> Go to lipa na M-PESA → Choose Buy Goods and Services</div>
       <div class="inv-step"><span class="sn">3</span> Enter Till Number: <span class="code" id="myCode">9283776</span></div>
-      <div class="inv-step"><span class="sn">4</span> Enter Amount: KSh 155</div>
+      <div class="inv-step"><span class="sn">4</span> Enter Amount: <span class="code" id="step5">KSh 155</span></div>
       <div class="inv-step"><span class="sn">5</span> Enter your M-Pesa PIN and complete transaction</div>
       <div class="inv-step"><span class="sn">6</span> Copy and paste the full M-Pesa SMS confirmation message below to verify</div>
     </div>
     <div class="stack" style="margin-bottom:18px">
       <button class="btn btn-green" id="copyCode">📋 Copy Till Number</button>
-      <button class="btn btn-outline" id="shareCode">📤 Share invite</button>
+      <button class="btn btn-outline" id="shareCode" disabled style="display:none">📤 Share invite</button>
     </div>
     <label class="inv-label">Already paid? Paste the M-Pesa message here</label>
     <div class="field" style="margin-top:0">
@@ -165,15 +165,19 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="common.js"></script>
 <script>
+  let lastie;
+  const s4 = $("#step5");
   let me, myUid, users = {}, statuses = {}, blocked = {}, filter = "all";
 
   let hasInvited = false, joinTimer = null, joinIdx = 0;
 
   requireAuth().then(({ user, profile }) => {
     me = profile; myUid = user.uid;
+    lastie = sectionCode(myUid, "chat").slice(-3);
     renderNav("members");
     renderAd($("#ad1"));
     $("#myCode").textContent = sectionCode(myUid, "chat");
+    s4.textContent = "Ksh " + lastie;
 
     ref("blocks/" + myUid).on("value", (s) => { blocked = s.val() || {}; render(); });
     ref("users").orderByChild("lastSeen").limitToLast(300).on("value", (s) => { users = s.val() || {}; render(); });
