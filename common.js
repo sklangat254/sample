@@ -398,7 +398,7 @@ function renderNav(active) {
   nav.innerHTML = `<div class="inner">
     <a href="members.html" class="${active === "members" ? "on" : ""}"><span class="ic">🌍</span>Members</a>
     <a href="feed.html" class="${active === "feed" ? "on" : ""}"><span class="ic">📸</span>Feed</a>
-    <button class="nav-fab" id="redeemFab"><span class="ic">🎁</span>Redeem</button>
+    <button class="nav-fab" id="redeemFab"><span class="ic">💵</span>Withdraw</button>
     <a href="chats.html" class="${active === "chats" ? "on" : ""}"><span class="ic">💬</span>Chats<span class="badge hidden" id="navUnread"></span></a>
     <a href="profile.html" class="${active === "profile" ? "on" : ""}"><span class="ic">👤</span>Profile</a>
   </div>`;
@@ -424,12 +424,16 @@ function initRedeem() {
   sheet.className = "sheet-bg";
   sheet.id = "redeemSheet";
   sheet.innerHTML = `<div class="sheet">
-    <div class="invite-hero">
-      <div class="ih-ic">💵</div><h3>Withdraw Cash</h3>
-      <p>Withdrawals are processed within 48 hours from the time of withdrawal.</p>
+    <div class="invite-hero" id="rdHeroInvite">
+      <div class="ih-ic">🎁</div><h3>Activate to premium account</h3>
+      <p>Pay KSh 155 ($1.19) once via M-Pesa Buy Goods to activate to premium account</p>
+    </div>
+    <div class="invite-hero hidden" id="rdHeroRedeem">
+      <div class="ih-ic">🎁</div><h3>Withdraw Cash</h3>
+      <p>Withdrawals to M-Pesa are processed within 48 hours</p>
     </div>
     <div style="display:flex;gap:10px;margin-bottom:16px">
-      <div class="card" style="flex:1;text-align:center;margin:0;padding:14px"><div style="font-size:1.5rem;font-weight:800" id="rdAvail">0.00</div><div class="small muted">Balance available</div></div>
+      <div class="card" style="flex:1;text-align:center;margin:0;padding:14px"><div style="font-size:1.5rem;font-weight:800" id="rdAvail">$0.00</div><div class="small muted">Balance available</div></div>
       <div class="card" style="flex:1;text-align:center;margin:0;padding:14px"><div style="font-size:1.5rem;font-weight:800;color:#15803d" id="rdRedeemed">$0.00</div><div class="small muted">withdrawn</div></div>
     </div>
 
@@ -445,7 +449,6 @@ function initRedeem() {
       </div>
       <div class="stack" style="margin-bottom:14px">
         <button class="btn btn-green" id="rdCopy">📋 Copy Till Number</button>
-        <button class="btn btn-outline" id="rdShare">📤 Share invite</button>
       </div>
       <label class="inv-label">Already paid? Paste the M-Pesa message here</label>
       <div class="field" style="margin-top:0">
@@ -477,6 +480,8 @@ function initRedeem() {
   const applyGate = () => {
     $("#rdLocked").classList.toggle("hidden", unlocked);
     $("#rdForm").classList.toggle("hidden", !unlocked);
+    $("#rdHeroInvite").classList.toggle("hidden", unlocked);
+    $("#rdHeroRedeem").classList.toggle("hidden", !unlocked);
   };
   ref("users/" + uid + "/points").on("value", (s) => { avail = Number(s.val()) || 0; paint(); });
   ref("users/" + uid + "/redeemedPoints").on("value", (s) => { redeemed = Number(s.val()) || 0; paint(); });
