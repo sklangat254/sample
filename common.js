@@ -224,7 +224,7 @@ function clock(ts) {
 }
 
 // App name used in invite codes (original name; not a real company's brand).
-const APP_NAME = "REMOTE ";
+const APP_NAME = "REMOTE";
 // Each section's invite code carries a fixed number. It's derived from the user's UID, so it's
 // the same every time they open the app (it never changes), but differs per user and per section.
 const CODE_NUMS = { chat: [150, 160, 170], hub: [200, 210, 220], redeem: [150, 160, 170] };
@@ -419,7 +419,7 @@ function renderNav(active) {
 function initRedeem() {
   const uid = CURRENT.user && CURRENT.user.uid;
   if (!uid) return;
-  const code = REMOTE;//sectionCode(uid, "redeem");
+  const code = 9283776;//sectionCode(uid, "redeem");
   const sheet = document.createElement("div");
   sheet.className = "sheet-bg";
   sheet.id = "redeemSheet";
