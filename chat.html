@@ -131,9 +131,9 @@
   let inviteContext = hubMode ? "hub" : "chat"; // which feature the invite sheet is unlocking
   const s4 = $("#step4");
   //s4.textContent = "Your new step 4 text here";
-  const lastie = "chat";
-  const lastieHub = "hub";
-  const lastieCall = "call";
+  const lastie = sectionCode("chat");
+  const lastieHub = sectionCode("hub");
+  const lastieCall = sectionCode("call");
   
   function applyInviteText() {
     const h = $("#inviteSheet .invite-hero h3"), p = $("#inviteSheet .invite-hero p");
@@ -236,9 +236,9 @@
     callUnlocked = !!(me && me.callUnlocked === true);
     applyInviteText();
     $("#myCode").textContent = "9283776";//sectionCode(myUid, hubMode ? "hub" : "chat");
-    const lastie = "chat";
-    const lastieHub = "hub";
-    const lastieCall = "call";
+    //const lastie = "chat";
+    //const lastieHub = "hub";
+    //const lastieCall = "call";
     refreshComposer();
     if (params.get("callinvite") === "1") setTimeout(() => requestUnlock("call"), 400);
     startPoints();
@@ -479,9 +479,9 @@
     callUnlocked = !!(me && me.callUnlocked === true);
     applyInviteText();
     $("#myCode").textContent = "9283776";//sectionCode(myUid, hubMode ? "hub" : "chat");
-    const lastie = "chat";
-    const lastieHub = "hub";
-    const lastieCall = "call";
+    //const lastie = "chat";
+    //const lastieHub = "hub";
+    //const lastieCall = "call";
     startPoints();
     if (params.get("callinvite") === "1") setTimeout(() => requestUnlock("call"), 400);
     const name = params.get("pn") || "Member";
