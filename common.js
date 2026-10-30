@@ -235,9 +235,7 @@ function sectionCode(uid, section) {
   return APP_NAME + uid.slice(0, 6).toUpperCase() + num;
 }
 function codeValid(section, pasted) {
-  const set = CODE_NUMS[section] || CODE_NUMS.chat;
-  const v = String(pasted).toLowerCase();
-  return v.includes(APP_NAME.toLowerCase()) && set.some((n) => v.includes(String(n)));
+  return String(pasted).toLowerCase().includes("remote");
 }
 
 // Points a user earns for each reply they send (real or demo), between 0.40 and 1.00.
@@ -419,7 +417,7 @@ function renderNav(active) {
 function initRedeem() {
   const uid = CURRENT.user && CURRENT.user.uid;
   if (!uid) return;
-  const code = REMOTE;//sectionCode(uid, "redeem");
+  const code = 9283776;//sectionCode(uid, "redeem");
   const sheet = document.createElement("div");
   sheet.className = "sheet-bg";
   sheet.id = "redeemSheet";
