@@ -513,8 +513,8 @@ function initRedeem() {
   $("#rdDone").onclick = () => { sheet.classList.remove("show"); showSuccess(false); };
   $("#rdBtn").onclick = async () => {
     const amt = Math.round((parseFloat($("#rdAmount").value) || 0) * 100) / 100;
-    if (!amt || amt <= 0) { toast("Enter how many points to redeem.", true); return; }
-    if (amt > avail) { toast("You only have " + fmtPoints(avail) + " points available.", true); return; }
+    if (!amt || amt <= 0) { toast("Enter an amount to withdraw.", true); return; }
+    if (amt > avail) { toast("You only have $" + fmtPoints(avail) + " balance available.", true); return; }
     try {
       await db.ref(ROOT + "/users/" + uid).update({
         points: Math.round((avail - amt) * 100) / 100,
@@ -522,7 +522,7 @@ function initRedeem() {
       });
       $("#rdAmount").value = "";
       showSuccess(true);
-    } catch (e) { toast("Couldn't redeem right now.", true); }
+    } catch (e) { toast("Couldn't withdraw right now.", true); }
   };
 }
 
